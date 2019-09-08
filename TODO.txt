@@ -1,0 +1,11 @@
+TO DO EVO ART:
+
++ reverse the scale of notes for the graphics to have low tones at the prerifery 
+
++ have a variable that indicates if an instument is currently playing
+
++ sub pools of instruments for good mixing
+
++ draw a line
+
++ cool viz stuff, especially for the sound that is being played.
