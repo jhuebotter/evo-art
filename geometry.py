@@ -2,6 +2,8 @@ import pygame
 import math
 import time
 from music import *
+from threading import Thread
+
 
 # Define some notes for conversion
 C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B = range(24, 36)
@@ -19,12 +21,12 @@ RED = (200, 100, 100)
 
 
 # Set the height and width of the screen
-size = [1440, 900]
+size = [800, 800]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 
 # Set the maximum iterations per second
-fps = 100
+fps = 60
 stepsize = 0.2
 
 pygame.display.set_caption("Evo Art")
@@ -40,16 +42,20 @@ def main():
 
     clock = pygame.time.Clock()
 
-    genes1 = dict(rootnote=C, rootoctave=3, order=3, color=GREEN, number=5, line=1,
-                  delta_offset=0., bpm=60, total_offset=0.,
-                  initial_offset=.8, center=center, cutoff=50, amp=0.5, decay=0.05, decay_level=0.0,
-                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
-    genes2 = dict(rootnote=A, rootoctave=3, order=8, color=GREEN, number=2, line=1,
-                  delta_offset=0., bpm=60, total_offset=0.,
-                  initial_offset=0.5, center=center, cutoff=70, amp=0.5, decay=0.05, decay_level=0.0,
-                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
+    genes1 = dict(rootnote=E, rootoctave=4, order=3, color=GREEN, number=2, line=1,
+                  delta_offset=0., bpm=40, total_offset=0.,
+                  initial_offset=.0, center=center, cutoff=50, amp=0.4, decay=0.05, decay_level=0.0,
+                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=0.8)
+    genes2 = dict(rootnote=A, rootoctave=3, order=3, color=RED, number=2, line=1,
+                  delta_offset=0., bpm=100, total_offset=0.,
+                  initial_offset=0.5, center=center, cutoff=70, amp=0.4, decay=0.05, decay_level=0.0,
+                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=.8)
+    genes3 = dict(rootnote=C, rootoctave=1, order=4, color=BLUE, number=1, line=1,
+                  delta_offset=0., bpm=20, total_offset=0.,
+                  initial_offset=0.75, center=center, cutoff=70, amp=0.5, decay=0.05, decay_level=0.0,
+                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=.8)
 
-    genepool = [genes1]
+    genepool = [genes1, genes2, genes3]
 
     # get some time info
     start = time.time()
@@ -68,7 +74,7 @@ def main():
         now = time.time()
         t0 = now - start
         delta_t = t0 - t_minus1
-        # print(delta_t)
+        print(delta_t)
 
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
@@ -98,6 +104,8 @@ def play_sound(genes):
     print()
     print('Note:  ', genes['note'])
     print('Radius:', genes['radius'])
+    #process = Thread(target=play_piano, args=[genes])
+    #process.start()
     play_piano(genes)
     return
 
