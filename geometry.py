@@ -40,11 +40,11 @@ def main():
 
     clock = pygame.time.Clock()
 
-    genes1 = dict(rootnote=C, rootoctave=4, size=40, order=6, color=GREEN, number=3, line=1,
+    genes1 = dict(rootnote=C, rootoctave=3, order=3, color=GREEN, number=5, line=1,
                   delta_offset=0., bpm=60, total_offset=0.,
-                  initial_offset=0.5, center=center, cutoff=50, amp=0.5, decay=0.05, decay_level=0.0,
+                  initial_offset=.8, center=center, cutoff=50, amp=0.5, decay=0.05, decay_level=0.0,
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
-    genes2 = dict(rootnote=A, rootoctave=3, size=40, order=8, color=GREEN, number=2, line=1,
+    genes2 = dict(rootnote=A, rootoctave=3, order=8, color=GREEN, number=2, line=1,
                   delta_offset=0., bpm=60, total_offset=0.,
                   initial_offset=0.5, center=center, cutoff=70, amp=0.5, decay=0.05, decay_level=0.0,
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
@@ -120,9 +120,9 @@ def rotatePoint(polarcorner, angle, center=center):
 def make_polygon(genes, t, delta_t):
     for i in range(genes['number']):
         factor = round(1. / math.cos(math.radians(180./genes['order'])), 3)
-        #print(factor)
-        genes['note'] = genes['rootnote'] + (12 * (i + genes['rootoctave'] - 1) * factor / 2.)
-        genes['radius'] = ((genes['rootnote']) * (factor**((i + genes['rootoctave'] - 1))))
+        #print(genes['rootnote'])
+        genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + (i * factor / 2.))
+        genes['radius'] = round(0.3 * (genes['rootnote']) * (factor**((i + genes['rootoctave'] - 1))), 3)
 
         # get the rotation angles
         prev_angle = round((t-delta_t) * (360. / genes['order']) * (genes['bpm'] / 60.), 3)
