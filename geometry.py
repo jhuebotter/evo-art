@@ -1,6 +1,7 @@
 import pygame
 import math
 import time
+import pandas as pd
 from music import *
 from threading import Thread
 
@@ -9,7 +10,6 @@ from threading import Thread
 C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B = range(24, 36)
 
 # Initialize the game engine
-from typing import Any
 pygame.init()
 
 # Define the colors we will use in RGB format
@@ -19,7 +19,6 @@ BLUE = (100, 100, 200)
 GREEN = (100, 200, 100)
 RED = (200, 100, 100)
 
-
 # Set the height and width of the screen
 size = [800, 800]
 center = [size[0] / 2, size[1] / 2]
@@ -27,16 +26,8 @@ screen = pygame.display.set_mode(size)
 
 # Set the maximum iterations per second
 fps = 60
-stepsize = 0.2
 
 pygame.display.set_caption("Evo Art")
-
-'''
-polar2z = lambda r,θ: r * exp( 1j * θ )
-polar2xy = lambda r,θ: (np.real(r * exp( 1j * θ )) + center[0], np.imag(r * exp( 1j * θ )) + center[1])
-z2polar = lambda z: ( abs(z), angle(z) )
-xy2polar = lambda x,y: (np.sqrt(x**2 + y**2), np.arctan2(y, x))
-'''
 
 def main():
 
@@ -56,6 +47,16 @@ def main():
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=.8)
 
     genepool = [genes1, genes2, genes3]
+
+    # to save the genepool
+    df = pd.DataFrame.from_dict(genepool)
+    df.to_csv('genepool.csv')
+
+    # to load the genepool
+    df = pd.read_csv('genepool.csv', index_col=0)
+    print(df.head())
+
+    genepool = df.to_dict(orient='records') #[genes1]
 
     # get some time info
     start = time.time()
@@ -80,6 +81,9 @@ def main():
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
 
+        df = pd.read_csv('genepool.csv', index_col=0)
+        genepool = df.to_dict(orient='records')
+
         # All drawing code happens after the for loop and but
         # inside the main while done==False loop.
         # Clear the screen and set the screen background
@@ -91,8 +95,6 @@ def main():
 
         # This MUST happen after all the other drawing commands.
         pygame.display.flip()
-
-
 
     # Be IDLE friendly
     pygame.quit()
@@ -128,9 +130,10 @@ def rotatePoint(polarcorner, angle, center=center):
 def make_polygon(genes, t, delta_t):
     for i in range(genes['number']):
         factor = round(1. / math.cos(math.radians(180./genes['order'])), 3)
-        #print(genes['rootnote'])
+        #print(factor)
         genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + (i * factor / 2.))
-        genes['radius'] = round(0.3 * (genes['rootnote']) * (factor**((i + genes['rootoctave'] - 1))), 3)
+        #genes['radius'] = round((genes['rootnote']) * (factor ** ((i + genes['rootoctave'] - 1))), 3)
+        genes['radius'] = round((genes['rootnote'] + (12 * (genes['rootoctave'] - 1))) * ((factor**(i))), 3)
 
         # get the rotation angles
         prev_angle = round((t-delta_t) * (360. / genes['order']) * (genes['bpm'] / 60.), 3)
@@ -150,7 +153,8 @@ def make_polygon(genes, t, delta_t):
                 play_sound(genes)
             corner = pol2cart(polarcorner[0], polarcorner[1])
             pos.append(corner)
-        pygame.draw.polygon(screen, genes['color'], pos, genes['line'])
+        #print((genes['red'], genes['red'], genes['blue']))
+        pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, genes['line'])
 
     return
 

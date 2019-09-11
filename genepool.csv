@@ -1,0 +1,4 @@
+,amp,bpm,center,color,cutoff,decay,decay_level,delta_offset,detune,env_curve,initial_offset,line,mix,mod_pulse_width,number,order,release,rootnote,rootoctave,sustain,sustain_level,total_offset
+0,0.4,40,"[400.0, 400.0]","(100, 200, 100)",50,0.05,0.0,0.0,0.4,7,0.0,1,0.8,0.5,2,3,5,28,4,0.3,0.5,0.0
+1,0.4,100,"[400.0, 400.0]","(200, 100, 100)",70,0.05,0.0,0.0,0.4,7,0.5,1,0.8,0.5,2,3,5,33,3,0.3,0.5,0.0
+2,0.5,20,"[400.0, 400.0]","(100, 100, 200)",70,0.05,0.0,0.0,0.4,7,0.75,1,0.8,0.5,1,4,5,24,1,0.3,0.5,0.0
