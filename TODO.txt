@@ -9,3 +9,7 @@ TO DO EVO ART:
 + draw a line
 
 + cool viz stuff, especially for the sound that is being played.
+
++ zoom camera
+
++ give polygon constructor function list of notes and position in rotation
