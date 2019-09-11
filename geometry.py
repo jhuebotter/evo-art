@@ -1,6 +1,7 @@
 import pygame
 import math
 import time
+import random
 import pandas as pd
 from music import *
 
@@ -31,7 +32,7 @@ def main():
 
     clock = pygame.time.Clock()
     print(GREEN[1])
-    genes1 = dict(rootnote=C, rootoctave=4, order=3, red=GREEN[0], green=GREEN[1], blue=GREEN[2], number=5, line=1,
+    genes1 = dict(rootnote=C, rootoctave=4, order=3, red=random_color(), green=random_color(), blue=random_color(), number=5, line=1,
                   delta_offset=0., bpm=60, total_offset=0.,
                   initial_offset=.8, center=center, cutoff=50, amp=0.5, decay=0.05, decay_level=0.0,
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
@@ -41,8 +42,8 @@ def main():
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
 
     # to save the genepool
-    #df = pd.DataFrame.from_dict(genes1)
-    #df.to_csv('genepool.csv')
+    df = pd.DataFrame.from_dict(genes1)
+    df.to_csv('genepool.csv')
 
     # to load the genepool
     df = pd.read_csv('genepool.csv', index_col=0)
@@ -92,6 +93,10 @@ def main():
     pygame.quit()
 
     return
+
+
+def random_color():
+    return 100 + int(random.uniform(0, 155))
 
 
 def play_sound(genes):
