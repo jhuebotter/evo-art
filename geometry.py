@@ -17,6 +17,7 @@ BLUE = (100, 100, 200)
 GREEN = (100, 200, 100)
 RED = (200, 100, 100)
 
+
 # Set the height and width of the screen
 size = [1440, 900]
 center = [size[0] / 2, size[1] / 2]
