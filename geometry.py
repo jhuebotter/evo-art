@@ -4,6 +4,7 @@ import time
 import pandas as pd
 from music import *
 from threading import Thread
+from genetics import *
 
 
 # Define some notes for conversion
@@ -46,17 +47,21 @@ def main():
                   initial_offset=0.75, center=center, cutoff=70, amp=0.5, decay=0.05, decay_level=0.0,
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=.8)
 
-    genepool = [genes1, genes2, genes3]
+    #genepool = [genes1, genes2, genes3]
 
     # to save the genepool
-    df = pd.DataFrame.from_dict(genepool)
+    #df = pd.DataFrame.from_dict(genepool)
+
+    df = make_genepool(3)
     df.to_csv('genepool.csv')
+
+    genepool = df.to_dict(orient='records')
 
     # to load the genepool
     df = pd.read_csv('genepool.csv', index_col=0)
     print(df.head())
 
-    genepool = df.to_dict(orient='records') #[genes1]
+    #genepool = df.to_dict(orient='records') #[genes1]
 
     # get some time info
     start = time.time()
@@ -108,7 +113,7 @@ def play_sound(genes):
     print('Radius:', genes['radius'])
     #process = Thread(target=play_piano, args=[genes])
     #process.start()
-    play_piano(genes)
+    play_synth(genes)
     return
 
 
@@ -150,7 +155,7 @@ def make_polygon(genes, t, delta_t):
             polarcorner[1] = round(polarcorner[1] % 360., 3)
             delta = abs(polarcorner[1] - prev_polarcorner[1])
             if delta > 180.:
-                play_sound(genes)
+                play_synth(genes)
             corner = pol2cart(polarcorner[0], polarcorner[1])
             pos.append(corner)
         #print((genes['red'], genes['red'], genes['blue']))

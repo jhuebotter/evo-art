@@ -12,10 +12,10 @@ def random_genome():
     genes = dict(rootnote=random.randint(24, 35),
                  rootoctave=4, #random.randint(3, 6),
                  order=random.randint(3, 10),
-                 number=4, #random.randint(1,4),
-                 bpm=60, #10*random.randint(3,12),
+                 number=2, #random.randint(1,4),
+                 bpm=12.5*random.randint(2,10),
                  total_offset=0., #0.125 * random.randint(0, 7),
-                 initial_offset=0.25, #0.125 * random.randint(1, 10), delta_offset=0.,
+                 initial_offset=0.33, #0.125 * random.randint(1, 10), delta_offset=0.,
                  red=random_color(), green=random_color(), blue=random_color(), line=1, center=center,
                  # this is all relevant for a synth
                  synth=random.randint(0,len(synths)-1),
