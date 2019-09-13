@@ -4,6 +4,7 @@ import time
 import random
 import pandas as pd
 from music import *
+from genetics import *
 
 # Define some notes for conversion
 C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B = range(24, 36)
@@ -19,37 +20,46 @@ GREEN = (100, 200, 100)
 RED = (200, 100, 100)
 
 # Set the height and width of the screen
-size = [1440, 900]
+size = [1920, 1080]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 
 # Set the maximum iterations per second
 fps = 100
 
+random_colors = True
+
+
 pygame.display.set_caption("Evo Art")
 
 def main():
 
     clock = pygame.time.Clock()
-    print(GREEN[1])
-    genes1 = dict(rootnote=C, rootoctave=4, order=3, red=random_color(), green=random_color(), blue=random_color(), number=5, line=1,
+
+    '''
+    genes1 = dict(rootnote=C, rootoctave=4, order=5, red=random_color(), green=random_color(), blue=random_color(), number=5, line=1,
                   delta_offset=0., bpm=60, total_offset=0.,
-                  initial_offset=.8, center=center, cutoff=50, amp=0.5, decay=0.05, decay_level=0.0,
+                  initial_offset=.4, center=center, cutoff=50, amp=0.5, decay=0.05, decay_level=0.0,
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
     genes2 = dict(rootnote=A, rootoctave=3, order=8, color=GREEN, number=2, line=1,
                   delta_offset=0., bpm=60, total_offset=0.,
                   initial_offset=0.5, center=center, cutoff=70, amp=0.5, decay=0.05, decay_level=0.0,
                   sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5)
-
-    # to save the genepool
-    df = pd.DataFrame.from_dict(genes1)
-    df.to_csv('genepool.csv')
+    '''
 
     # to load the genepool
-    df = pd.read_csv('genepool.csv', index_col=0)
-    print(df.head())
+    #df = load_genepool()
+    df = make_genepool(4)
 
-    genepool = df.to_dict(orient='records') #[genes1]
+    genepool = df.to_dict(orient='records')
+
+    if random_colors:
+        for genes in genepool:
+            genes = set_colors(genes)
+
+    # to save the genepool
+    #df = pd.DataFrame.from_dict(genes1)
+    save_genepool(df)
 
     # get some time info
     start = time.time()
@@ -74,7 +84,7 @@ def main():
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
 
-        df = pd.read_csv('genepool.csv', index_col=0)
+        df = load_genepool()
         genepool = df.to_dict(orient='records')
 
         # All drawing code happens after the for loop and but
@@ -95,15 +105,8 @@ def main():
     return
 
 
-def random_color():
-    return 100 + int(random.uniform(0, 155))
-
-
 def play_sound(genes):
-    print()
-    print('Note:  ', genes['note'])
-    print('Radius:', genes['radius'])
-    play_piano(genes)
+    play_synth(genes)
     return
 
 
