@@ -35,32 +35,15 @@ def main():
 
     clock = pygame.time.Clock()
 
-    genes1 = dict(rootnote=E, rootoctave=4, order=3, color=GREEN, number=2, line=1,
-                  delta_offset=0., bpm=40, total_offset=0.,
-                  initial_offset=.0, center=center, cutoff=50, amp=0.4, decay=0.05, decay_level=0.0,
-                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=0.8)
-    genes2 = dict(rootnote=A, rootoctave=3, order=3, color=RED, number=2, line=1,
-                  delta_offset=0., bpm=100, total_offset=0.,
-                  initial_offset=0.5, center=center, cutoff=70, amp=0.4, decay=0.05, decay_level=0.0,
-                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=.8)
-    genes3 = dict(rootnote=C, rootoctave=1, order=4, color=BLUE, number=1, line=1,
-                  delta_offset=0., bpm=20, total_offset=0.,
-                  initial_offset=0.75, center=center, cutoff=70, amp=0.5, decay=0.05, decay_level=0.0,
-                  sustain=0.3, sustain_level=0.5, release=5, detune=0.4, env_curve=7, mod_pulse_width=0.5, mix=.8)
-
-    #genepool = [genes1, genes2, genes3]
-
-    # to save the genepool
-    #df = pd.DataFrame.from_dict(genepool)
-
-    df = make_genepool(3)
+    # ---  Hhere we init the genes -------------------- #
+    df = make_genepool(5)
     df.to_csv('genepool.csv')
 
     genepool = df.to_dict(orient='records')
 
     # to load the genepool
     df = pd.read_csv('genepool.csv', index_col=0)
-    print(df.head())
+    #print(df.head())
 
     #genepool = df.to_dict(orient='records') #[genes1]
 
@@ -81,7 +64,7 @@ def main():
         now = time.time()
         t0 = now - start
         delta_t = t0 - t_minus1
-        print(delta_t)
+        #print(delta_t)
 
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close

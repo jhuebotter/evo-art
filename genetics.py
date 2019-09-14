@@ -4,21 +4,25 @@ import pandas as pd
 size = [1920, 1080]
 center = [size[0] / 2, size[1] / 2]
 
-synths = ['piano', 'sine', 'pretty_bell']
+#synths = ['blade', 'sine', 'pretty_bell', 'dull_bell', 'dpulse']
 #synths = ['piano', 'mod_synth', 'bass', 'kick']
+#samples = ['elec_soft_kick', 'sn_dub', 'tabla_ke3', 'tabla_na_s', 'elec_wood', 'bass_voxy_hit_c', 'drum_cowbell', 'drum_cymbal_pedal']
 
-samples = ['elec_soft_kick', 'sn_dub', 'tabla_ke3', 'tabla_na_s', 'elec_wood', 'bass_voxy_hit_c', 'drum_cowbell', 'drum_cymbal_pedal']
-
+synths = ['hollow', 'sine', 'fm', 'mod_sine', 'growl']
+high_percs = ['tabla_na_s', 'elec_wood', 'drum_cymbal_pedal', 'drum_snare_soft', 'drum_cymbal_closed', 'drum_tom_hi_soft']
+low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'glitch_perc2', 'drum_tom_mid_soft']
+bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_robot3', 'mehackit_phone1']
+vox = ['ambi_choir']
 
 def random_genome():
     # creates a semi random genome
-    genes = dict(rootnote=random.randint(24, 35),
-                 rootoctave=4, #random.randint(3, 6),
-                 order=random.randint(3, 3),
-                 number=2, #random.randint(1,4),
-                 bpm=12.5*random.randint(1,4),
+    genes = dict(rootnote=29,#random.randint(24, 35),
+                 rootoctave=random.randint(2, 3),
+                 order=random.randint(3,6),
+                 number=random.randint(1, 4),
+                 bpm=random.choice([30, 60]),
                  total_offset=0.75, #0.125 * random.randint(0, 7),
-                 initial_offset=0.5,#0.125 * random.randint(1, 8), delta_offset=0.,
+                 initial_offset=0.25 * random.randint(1, 4), delta_offset=0.,
                  red=random_color(), green=random_color(), blue=random_color(), line=1, center=center,
                  # this is all relevant for a synth
                  synth=random.randint(0,len(synths)-1),
@@ -30,17 +34,16 @@ def random_genome():
                  decay_level=0.,
                  sustain=random.uniform(0., 1.),
                  sustain_level=0.,
-                 release=random.uniform(0., 1.),
+                 release=random.uniform(0., 0.5),
                  env_curve=random.randint(1, 7),
-                 mix=0.0,
+                 mix=random.uniform(0., .6),
                  # Now the sample related stuff
-                 nature=random.randint(0, 4),
-                 sample=random.randint(0, len(samples)-1)
+                 nature=random.randint(0, 10),
+                 high_perc=random.randint(0, len(high_percs)-1),
+                 low_perc=random.randint(0, len(low_percs)-1),
+                 bass=random.randint(0, len(bass)-1),
+                 vox=0
                  )
-
-
-
-
     return genes
 
 
