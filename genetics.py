@@ -4,22 +4,25 @@ import pandas as pd
 size = [1920, 1080]
 center = [size[0] / 2, size[1] / 2]
 
-synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
+synths = ['piano', 'sine', 'pretty_bell']
 #synths = ['piano', 'mod_synth', 'bass', 'kick']
+
+samples = ['elec_soft_kick', 'sn_dub', 'tabla_ke3', 'tabla_na_s', 'elec_wood', 'bass_voxy_hit_c', 'drum_cowbell', 'drum_cymbal_pedal']
+
 
 def random_genome():
     # creates a semi random genome
     genes = dict(rootnote=random.randint(24, 35),
                  rootoctave=4, #random.randint(3, 6),
-                 order=random.randint(3, 10),
+                 order=random.randint(3, 3),
                  number=2, #random.randint(1,4),
-                 bpm=12.5*random.randint(2,10),
-                 total_offset=0., #0.125 * random.randint(0, 7),
-                 initial_offset=0.33, #0.125 * random.randint(1, 10), delta_offset=0.,
+                 bpm=12.5*random.randint(1,4),
+                 total_offset=0.75, #0.125 * random.randint(0, 7),
+                 initial_offset=0.5,#0.125 * random.randint(1, 8), delta_offset=0.,
                  red=random_color(), green=random_color(), blue=random_color(), line=1, center=center,
                  # this is all relevant for a synth
                  synth=random.randint(0,len(synths)-1),
-                 amp=0.3 + 0.1 * random.randint(1, 5),
+                 amp=0.1 + 0.1 * random.randint(1, 3),
                  pan=0.,
                  attack=random.uniform(0., 1.),
                  attack_level=1.,
@@ -29,7 +32,10 @@ def random_genome():
                  sustain_level=0.,
                  release=random.uniform(0., 1.),
                  env_curve=random.randint(1, 7),
-                 mix=0.0
+                 mix=0.0,
+                 # Now the sample related stuff
+                 nature=random.randint(0, 4),
+                 sample=random.randint(0, len(samples)-1)
                  )
 
 

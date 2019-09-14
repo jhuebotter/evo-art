@@ -1,7 +1,13 @@
 from psonic import *
 
-synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
+#synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
 #synths = ['piano', 'mod_daw', 'bass']
+
+synths = ['piano', 'sine', 'pretty_bell']
+samples = ['elec_soft_kick', 'sn_dub', 'tabla_ke3', 'tabla_na_s', 'elec_wood', 'bass_voxy_hit_c', 'drum_cowbell', 'drum_cymbal_pedal']
+                                          
+
+
 
 def setup_listeners():
 
@@ -11,8 +17,12 @@ def setup_listeners():
             a, = sync "/osc/trigger/{synth}"
             synth :{synth}, note: a
             end """)
-
-    return
+    for sample in samples:
+        print('Setting up listener for: ', sample)
+        run(f"""live_loop :{sample} do              
+            a, = sync "/osc/trigger/{sample}"
+            sample :{sample}, amp: a, pre_amp: 0.5         
+            end """)
 
 
 def play_piano(genes):
@@ -25,10 +35,16 @@ def play_piano(genes):
 
 def play_synth(genes):
     print()
+    print('Nature: ', genes['nature'])
+    print('Sample ', samples[genes['sample']])
     print('Synth: ', synths[genes['synth']])
+
     print('Note:  ', genes['note'])
     print('Radius:', genes['radius'])
-    send_message(f"/trigger/{synths[genes['synth']]}", genes['note']) #, genes['amp'], genes['sustain'], genes['release'])
+    if genes['nature'] == 1:
+        send_message(f"/trigger/{synths[genes['synth']]}", genes['note']) #, genes['amp'], genes['sustain'], genes['release'])
+    else:
+        send_message(f"/trigger/{samples[genes['sample']]}", genes['amp']) #, genes['amp'], genes['sustain'], genes['release'])
 
 
 setup_listeners()

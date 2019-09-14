@@ -24,6 +24,7 @@ RED = (200, 100, 100)
 size = [800, 800]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
+pos_line = [[center[0], 0], center]
 
 # Set the maximum iterations per second
 fps = 60
@@ -73,7 +74,7 @@ def main():
 
         # This limits the while loop to a max of 10 times per second.
         # Leave this out and we will use all CPU we can.
-        clock.tick(fps)
+        #clock.tick(fps)
 
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start
@@ -93,10 +94,11 @@ def main():
         # inside the main while done==False loop.
         # Clear the screen and set the screen background
         screen.fill(BLACK)
-
+        pygame.draw.polygon(screen, WHITE, pos_line, 1)
         # This is where the magic happens
         for genes in genepool:
             make_polygon(genes, t0, delta_t)
+
 
         # This MUST happen after all the other drawing commands.
         pygame.display.flip()
@@ -160,6 +162,7 @@ def make_polygon(genes, t, delta_t):
             pos.append(corner)
         #print((genes['red'], genes['red'], genes['blue']))
         pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, genes['line'])
+
 
     return
 
