@@ -36,7 +36,7 @@ def main():
     clock = pygame.time.Clock()
 
     # ---  Hhere we init the genes -------------------- #
-    df = make_genepool(5)
+    df = make_genepool(4)
     df.to_csv('genepool.csv')
 
     genepool = df.to_dict(orient='records')
@@ -57,7 +57,7 @@ def main():
 
         # This limits the while loop to a max of 10 times per second.
         # Leave this out and we will use all CPU we can.
-        #clock.tick(fps)
+        clock.tick(fps)
 
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start

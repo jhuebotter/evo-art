@@ -3,10 +3,11 @@ from psonic import *
 #synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
 #synths = ['piano', 'mod_daw', 'bass']
 
-#synths = ['blade', 'sine', 'dull_bell', 'saw']
-synths = ['hollow', 'sine', 'fm', 'mod_sine', 'growl']
-high_percs = ['tabla_na_s', 'elec_wood', 'drum_cymbal_pedal', 'drum_snare_soft', 'drum_cymbal_closed', 'drum_tom_hi_soft']
-low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'glitch_perc2', 'drum_tom_mid_soft']
+#synths = ['blade', 'sine', 'dull_bell', 'saw', 'tb303']
+synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
+high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
+low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
+snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_robot3', 'mehackit_phone1']
 
 def setup_listeners():
@@ -14,9 +15,9 @@ def setup_listeners():
     for synth in synths:
         print("setting up listener for", synth)
         run(f"""live_loop :{synth} do
-            a, r = sync "/osc/trigger/{synth}"
-            with_fx :reverb, room: 0.5, pre_amp: 0.1 do
-            synth :{synth}, note: a, release: r
+            n, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
+            with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
+            synth :{synth}, note: n, attack: a, release: r, pan: p, mod_range: m2
             end
             end """)
     for sample in low_percs:
@@ -29,7 +30,7 @@ def setup_listeners():
         print('Setting up listener for: ', sample)
         run(f"""live_loop :{sample} do              
             a, m = sync "/osc/trigger/{sample}"
-            with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2, pre_mix: 0.5 do
+            with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
             sample :{sample}, amp: a, pre_amp: 0.5
             end         
             end """)
@@ -37,7 +38,13 @@ def setup_listeners():
         print('Setting up listener for: ', sample)
         run(f"""live_loop :{sample} do              
             a, = sync "/osc/trigger/{sample}"
-            sample :{sample}, amp: a, note: :C4, finish: 0.5, pre_amp: 0, cutoff:50         
+            sample :{sample}, amp: a, lpf: 70, pre_amp: 0.5       
+            end """)
+    for snare in snares:
+        print('Setting up listener for: ', snare)
+        run(f"""live_loop :{snare} do              
+            a, = sync "/osc/trigger/{snare}"
+            sample :{snare}, amp: a        
             end """)
 
 
@@ -60,17 +67,28 @@ def play_synth(genes):
     #print('Note:  ', genes['note'])
     #print('Radius:', genes['radius'])
     #'''
-    if genes['nature'] <= 4:
+    if genes['nature'] <= 35:
+        print(' ')
         print('Synth Playing: ', synths[genes['synth']])
-        send_message(f"/trigger/{synths[genes['synth']]}", genes['note'], genes['release'])
-    elif genes['nature'] == 5:
+        print('Note:           ', genes['note'])
+        print('Attack, Release :', round(genes['attack'], 2), round(genes['release'], 2))
+        send_message(f"/trigger/{synths[genes['synth']]}", genes['note'], genes['release'], genes['attack'], genes['decay'], genes['mix'], genes['mod_range'])
+    elif genes['nature']  >= 36 and genes['nature'] <= 50:
+        print(' ')
         print('Bass playing:  ', bass[genes['bass']])
+        print('Note:           ', genes['note'])
         send_message(f"/trigger/{bass[genes['bass']]}", genes['amp'])
-    elif genes['nature'] >= 6 and genes['nature'] < 8:
-        #print('Low perscussion: ', low_percs[genes['low_perc']])
-        send_message(f"/trigger/{low_percs[genes['low_perc']]}", genes['amp'])  # , genes['amp'], genes['sustain'], genes['release'])
+    elif genes['nature'] >= 51 and genes['nature'] <= 60:
+        print('\n---PERC LOW')
+        print('Low perscussion: ', low_percs[genes['low_perc']])
+        send_message(f"/trigger/{low_percs[genes['low_perc']]}", genes['amp'])
+    elif genes['nature'] >= 61 and genes['nature'] <= 80:
+        print('\n---SNARE')
+        print('SNARE          : ', snares[genes['snare']])
+        send_message(f"/trigger/{snares[genes['snare']]}", genes['amp'])
     else:
-        #print(high_percs[genes['high_perc']])
+        print('\n---PERC HIGH')
+        print(high_percs[genes['high_perc']])
         send_message(f"/trigger/{high_percs[genes['high_perc']]}", genes['amp'], genes['mix'])
     #'''
     return
