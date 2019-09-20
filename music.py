@@ -6,8 +6,8 @@ from psonic import *
 #synths = ['blade', 'sine', 'dull_bell', 'saw', 'tb303']
 
 # instuments
-#synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
-synths = ['pluck', 'pluck', 'pluck']
+synths = ['beep', 'mod_pulse', 'mod_sine', 'sine']
+#synths = ['sine', 'sine', 'sine']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
 low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re', 'mehackit_robot3']
 #snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
@@ -17,7 +17,7 @@ vox = ['ambi_choir']
 
 
 
-instruments = [synths, low_percs, snares, high_percs]
+instruments = [synths, low_percs, snares, high_percs, synths, synths]
 
 def setup_listeners():
     print("setting up metronome TICK")

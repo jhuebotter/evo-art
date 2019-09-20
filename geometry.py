@@ -29,13 +29,16 @@ snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
-instruments = [synths, low_percs, snares, high_percs]
+instruments = [synths, low_percs, snares, high_percs, synths, synths]
 
 # Set the height and width of the screen
 size = [800, 800]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
+
+# Set the scaling factor of the visualization between 0.1 and 0.5
+SCALING_FACTOR = 0.5
 
 # Set the maximum iterations per second
 fps = 60
@@ -50,7 +53,7 @@ def main():
     # ---  Hhere we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(4, genes)
+    df = make_genepool(6, genes)
     df.to_csv('genepool.csv')
 
     #genepool = df.to_dict(orient='records')
@@ -118,8 +121,8 @@ def play_sound(genes):
 
 def pol2cart(rho, phi, center=center):
     # get cartesian coordinates from polar
-    x = center[1] + rho * math.cos(math.radians(phi))
-    y = center[0] - rho * math.sin(math.radians(phi))
+    x = center[1] + rho * math.cos(math.radians(phi + 180))
+    y = center[0] - rho * math.sin(math.radians(phi + 180))
 
     return [y, x]
 
@@ -138,12 +141,12 @@ def make_polygon(genes, t, delta_t):
         #genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + (i * factor / 2.))
         #genes['radius'] = round((genes['rootnote']) * (factor ** ((i + genes['rootoctave'] - 1))), 3)
         #genes['radius'] = round((genes['rootnote'] + (12 * (genes['rootoctave'] - 1))) * ((factor**(i))), 3)
-
-
         #genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
-        genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
-        genes['radius'] = 0.5 * 440 * 10 ** (math.log(2, 10) * (genes['note'] - 69) / 12)
         #genes['radius'] = 50 + 440 * 10 ** (math.log(2) * (genes['note'] / genes['rootoctave'] * factor))
+
+        genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
+        genes['radius'] = SCALING_FACTOR * 440 * 10 ** (math.log(2, 10) * (genes['note'] - 69) / 12)
+
 
         # get the rotation angles
         prev_angle = round((t-delta_t) * (360. / genes['order']) * (genes['bpm'] / 60.), 3)
