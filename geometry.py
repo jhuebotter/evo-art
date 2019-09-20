@@ -20,6 +20,17 @@ BLUE = (100, 100, 200)
 GREEN = (100, 200, 100)
 RED = (200, 100, 100)
 
+
+# instuments
+synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
+high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
+low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re', 'mehackit_robot3']
+snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
+bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
+vox = ['ambi_choir']
+
+instruments = [synths, low_percs, snares, high_percs]
+
 # Set the height and width of the screen
 size = [800, 800]
 center = [size[0] / 2, size[1] / 2]
@@ -31,15 +42,18 @@ fps = 60
 
 pygame.display.set_caption("Evo Art")
 
+
 def main():
 
     clock = pygame.time.Clock()
 
     # ---  Hhere we init the genes -------------------- #
-    df = make_genepool(4)
+    #for i in range(len(instruments)):
+    genes = [dict(instrument=x) for x in range(len(instruments))]
+    df = make_genepool(4, genes)
     df.to_csv('genepool.csv')
 
-    genepool = df.to_dict(orient='records')
+    #genepool = df.to_dict(orient='records')
 
     # to load the genepool
     df = pd.read_csv('genepool.csv', index_col=0)
@@ -121,9 +135,15 @@ def make_polygon(genes, t, delta_t):
     for i in range(genes['number']):
         factor = round(1. / math.cos(math.radians(180./genes['order'])), 3)
         #print(factor)
-        genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + (i * factor / 2.))
+        #genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + (i * factor / 2.))
         #genes['radius'] = round((genes['rootnote']) * (factor ** ((i + genes['rootoctave'] - 1))), 3)
-        genes['radius'] = round((genes['rootnote'] + (12 * (genes['rootoctave'] - 1))) * ((factor**(i))), 3)
+        #genes['radius'] = round((genes['rootnote'] + (12 * (genes['rootoctave'] - 1))) * ((factor**(i))), 3)
+
+
+        #genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
+        genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
+        genes['radius'] = 0.5 * 440 * 10 ** (math.log(2, 10) * (genes['note'] - 69) / 12)
+        #genes['radius'] = 50 + 440 * 10 ** (math.log(2) * (genes['note'] / genes['rootoctave'] * factor))
 
         # get the rotation angles
         prev_angle = round((t-delta_t) * (360. / genes['order']) * (genes['bpm'] / 60.), 3)
