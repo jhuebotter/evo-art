@@ -1,18 +1,16 @@
 from psonic import *
 
-#synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
-synths = ['piano', 'mod_synth', 'bass', 'kick']
+synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
+#synths = ['piano', 'mod_dsaw', 'bass', 'kick']
 
 def setup_listeners():
 
     for synth in synths:
         print("setting up listener for", synth)
         run(f"""live_loop :{synth} do
-            use_real_time
-            a, b, c, d = sync "/osc*/trigger/{synth}"
+            a, = sync "/osc*/trigger/{synth}"
             synth :{synth}, note: a
             end """)
-
     return
 
 
@@ -21,6 +19,7 @@ def play_piano(genes):
     return
 
 #def play_mod_synth(genes):
+
 #    send_message('/trigger/mod_synth', genes['note'], genes['cutoff'], genes['amp'], genes['sustain'], genes['release'], genes['mod_pulse_width'])
 #    return
 

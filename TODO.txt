@@ -13,3 +13,5 @@ TO DO EVO ART:
 + zoom camera
 
 + give polygon constructor function list of notes and position in rotation
+
++ individual centers to disentangle the screen
