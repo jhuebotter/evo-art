@@ -6,10 +6,10 @@ from psonic import *
 #synths = ['blade', 'sine', 'dull_bell', 'saw', 'tb303']
 
 # instuments
-synths = ['blade', 'mod_pulse', 'mod_sine', 'sine']
+synths = ['pluck', 'mod_pulse', 'mod_sine', 'pretty_bell']
 #synths = ['sine', 'sine', 'sine']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
-low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re', 'mehackit_robot3']
+low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
 #snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 snares = ['drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
@@ -29,13 +29,14 @@ def setup_listeners2(df, instr):
 
 def setup_listeners():
     print("setting up metronome TICK")
-    run("""in_thread do
-                live_loop :metronome do
+
+    run("""use_debug false
+            in_thread do
+            live_loop :metronome do
                 cue :tick
                 sleep 0.0625
             end
             end""")
-
 
     for synth in synths:
         print("setting up listener for", synth)
@@ -60,8 +61,7 @@ def setup_listeners():
     for sample in high_percs:
         print('Setting up listener for: ', sample)
         run(f"""in_thread do
-            live_loop :{sample}, sync: :tick do
-            #use_real_time            
+            live_loop :{sample}, sync: :tick do           
             a, m, m_echo = sync "/osc/trigger/{sample}"
             with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
             with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
@@ -74,18 +74,15 @@ def setup_listeners():
         print('Setting up listener for: ', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do            
-            #use_real_time  
             a, p = sync "/osc/trigger/{sample}"
             sample :{sample}, amp: a, pitch: p, lpf: 70, pre_amp: 0.5       
             end
             end""")
     for snare in snares:
         print('Setting up listener for: ', snare)
-        run(f"""live_loop :{snare}, sync: :tick do
-            #use_real_time           
+        run(f"""live_loop :{snare}, sync: :tick do          
             a, = sync "/osc/trigger/{snare}"
             sample :{snare}, amp: a        
-            end
             end""")
 
 

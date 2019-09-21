@@ -5,6 +5,7 @@ import pandas as pd
 from music import *
 from threading import Thread
 from genetics import *
+from psonic import *
 
 
 # Define some notes for conversion
@@ -24,21 +25,21 @@ RED = (200, 100, 100)
 # instuments
 synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
-low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re', 'mehackit_robot3']
+low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
 snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
-instruments = [synths, low_percs, snares, high_percs, synths, synths, high_percs, synths, bass, bass]
+instruments = [synths, low_percs, snares, high_percs, bass, synths, high_percs, synths, synths, bass]
 
 # Set the height and width of the screen
-size = [800, 800]
+size = [1200, 800]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
 
 # Set the scaling factor of the visualization between 0.1 and 0.5
-SCALING_FACTOR = 0.5
+SCALING_FACTOR = 0.4
 
 # Set the maximum iterations per second
 fps = 60
@@ -53,7 +54,7 @@ def main():
     # ---  Hhere we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(4, genes)
+    df = make_genepool(5, genes)
     df.to_csv('genepool.csv')
 
     #genepool = df.to_dict(orient='records')
@@ -108,6 +109,12 @@ def main():
 
     # Be IDLE friendly
     pygame.quit()
+
+    # Stop running processes in Sonic Pi
+    run("""'/stop-all-jobs'""")
+    #run("""use_osc "localhost", 5000
+    #        osc '/stop'""")
+    print('Stopped program')
 
     return
 
