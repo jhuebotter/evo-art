@@ -29,7 +29,7 @@ snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
-instruments = [synths, low_percs, snares, high_percs, synths, synths]
+instruments = [synths, low_percs, snares, high_percs, synths, synths, high_percs, synths, bass, bass]
 
 # Set the height and width of the screen
 size = [800, 800]
@@ -53,16 +53,19 @@ def main():
     # ---  Hhere we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(6, genes)
+    df = make_genepool(4, genes)
     df.to_csv('genepool.csv')
 
     #genepool = df.to_dict(orient='records')
 
     # to load the genepool
     df = pd.read_csv('genepool.csv', index_col=0)
-    #print(df.head())
+    #genepool = df.to_dict(orient='records')  # [genes1]
 
-    #genepool = df.to_dict(orient='records') #[genes1]
+    #setup_listeners2(df, df['instrument'].values)
+    setup_listeners()
+
+
 
     # get some time info
     start = time.time()

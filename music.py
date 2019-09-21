@@ -6,7 +6,7 @@ from psonic import *
 #synths = ['blade', 'sine', 'dull_bell', 'saw', 'tb303']
 
 # instuments
-synths = ['beep', 'mod_pulse', 'mod_sine', 'sine']
+synths = ['blade', 'mod_pulse', 'mod_sine', 'sine']
 #synths = ['sine', 'sine', 'sine']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
 low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re', 'mehackit_robot3']
@@ -17,58 +17,75 @@ vox = ['ambi_choir']
 
 
 
-instruments = [synths, low_percs, snares, high_percs, synths, synths]
+instruments = [synths, bass, low_percs, high_percs, synths, synths, high_percs, synths, bass, bass]
+
+
+def setup_listeners2(df, instr):
+    for instrument in instr:
+        print("setting up listener for")
+
+
+
 
 def setup_listeners():
     print("setting up metronome TICK")
-    run("""live_loop :tick do
+    run("""in_thread do
+                live_loop :metronome do
                 cue :tick
                 sleep 0.0625
+            end
             end""")
 
 
     for synth in synths:
         print("setting up listener for", synth)
-        run(f"""live_loop :{synth}, sync: :tick do
-            use_real_time
+        run(f"""in_thread do
+            live_loop :{synth}, sync: :tick do
             n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
             with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
             synth :{synth}, note: n, cutoff: c, attack: a, release: r, pan: p, mod_range: m2
+            end
             end
             end""")
 
     for sample in low_percs:
         print('Setting up listener for: ', sample)
-        run(f"""live_loop :{sample}, sync: :tick do
-            use_real_time              
+        run(f"""in_thread do
+            live_loop :{sample}, sync: :tick do              
             a, = sync "/osc/trigger/{sample}"
             sample :{sample}, amp: a, pre_amp: 0.5         
+            end
             end""")
 
     for sample in high_percs:
         print('Setting up listener for: ', sample)
-        run(f"""live_loop :{sample}, sync: :tick do
-            use_real_time            
+        run(f"""in_thread do
+            live_loop :{sample}, sync: :tick do
+            #use_real_time            
             a, m, m_echo = sync "/osc/trigger/{sample}"
             with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
             with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
             sample :{sample}, amp: a, pre_amp: 0.5
             end
             end      
+            end
             end""")
     for sample in bass:
         print('Setting up listener for: ', sample)
-        run(f"""live_loop :{sample}, sync: :tick do            
-            use_real_time  
+        run(f"""in_thread do
+            live_loop :{sample}, sync: :tick do            
+            #use_real_time  
             a, p = sync "/osc/trigger/{sample}"
             sample :{sample}, amp: a, pitch: p, lpf: 70, pre_amp: 0.5       
-            end """)
+            end
+            end""")
     for snare in snares:
         print('Setting up listener for: ', snare)
         run(f"""live_loop :{snare}, sync: :tick do
-            use_real_time           
+            #use_real_time           
             a, = sync "/osc/trigger/{snare}"
             sample :{snare}, amp: a        
+            end
             end""")
 
 
@@ -152,7 +169,7 @@ def play_synth(genes):
     return
 
 
-setup_listeners()
+
 
 
 '''

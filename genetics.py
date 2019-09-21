@@ -9,7 +9,7 @@ center = [size[0] / 2, size[1] / 2]
 #samples = ['elec_soft_kick', 'sn_dub', 'tabla_ke3', 'tabla_na_s', 'elec_wood', 'bass_voxy_hit_c', 'drum_cowbell', 'drum_cymbal_pedal']
 
 # instuments
-synths = ['beep', 'mod_pulse', 'mod_sine', 'sine']
+synths = ['blade', 'mod_pulse', 'mod_sine', 'sine']
 #synths = ['saw', 'sine', 'pluck']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
 low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re', 'mehackit_robot3']
@@ -18,18 +18,18 @@ snares = ['drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
-instruments = [synths, low_percs, snares, high_percs, synths, synths]
+instruments = [synths, low_percs, snares, high_percs, synths, synths, high_percs, synths, bass, bass]
 
 
 def random_genome():
     # creates a semi random genome
     genes = dict(rootnote=random.randint(24, 35),
-                 rootoctave=random.randint(3, 3),
+                 rootoctave=random.randint(3, 5),
                  order=random.randint(3,12),
-                 number=random.randint(4, 4),
-                 bpm=random.choice([10, 20, 40]),
+                 number=random.randint(2, 6),
+                 bpm=random.choice([7.5, 15, 30]),
                  total_offset=0., #0.75, #0.125 * random.randint(0, 7),
-                 initial_offset=0.1 * random.randint(1, 3),#0.25 * random.randint(1, 4), delta_offset=0.,
+                 initial_offset=0.5,#* random.randint(1, 5),#0.25 * random.randint(1, 4), delta_offset=0.,
                  red=random_color(), green=random_color(), blue=random_color(), line=1, center=center,
                  nature=random.randint(0, 5),#random.randint(0, len(instruments) - 1),
                  # this is all relevant for a synth
