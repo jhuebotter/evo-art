@@ -80,53 +80,6 @@ def make_phenotype(genes):
     return phenotype
 
 
-def random_genotype():
-    # creates a semi random genome
-    genes = dict(rootnote=random.randint(24, 35),
-                 rootoctave=random.randint(4, 5),
-                 order=random.choice([3, 4, 5, 6, 7, 8, 10]),#
-                 number=random.randint(3, 4),
-                 bpm=random.choice([15, 30, 60]),
-                 total_offset=0., #0.125 * random.randint(0, 7),
-                 initial_offset= 0.,#* random.randint(0, 16),#0.25 * random.randint(1, 4), delta_offset=0.,
-                 red=random_color(), green=random_color(), blue=random_color(), line=2, center=center,
-                 nature=random.randint(0, 5),#random.randint(0, len(instruments) - 1),
-                 # this is all relevant for a synth
-                 synth=random.randint(0,len(synths)-1),
-                 amp=.1 * random.randint(1, 8),
-                 cutoff=random.randint(30, 100),
-                 pan=random.uniform(-.5, .5),
-                 attack=random.uniform(0., .0),
-                 attack_level=1.,
-                 decay=random.uniform(0., .5),
-                 decay_level=0.,
-                 sustain=random.uniform(0., .5),
-                 sustain_level=0.,
-                 release=random.uniform(0., 1.),
-                 env_curve=random.choice(['2, 3, 7']),
-                 mod_range=random.choice([2, 5, 7, 12]),
-                 #effect stuff
-                 mix=random.uniform(.3, 1.),
-                 mix_echo=random.uniform(.1, .8),
-                 # Now the sample related stuff
-                 high_perc=random.randint(0, len(high_percs)-1),
-                 low_perc=random.randint(0, len(low_percs)-1),
-                 # bass related (including pitch for the sample
-                 bass=random.randint(0, len(bass)-1),
-                 pitch=random.randint(-5, 7),
-                 #added snare drum
-                 snare=random.randint(0, len(snares)-1),
-                 vox=0
-                 )
-
-    return genes
-
-
-def map_genes(genes):
-    genes['initial_offset'] = 2**genes['bpm']
-    genes['bpm'] = 15 * 2 ** genes['bpm']
-    return genes
-
 def add_genes(df, genes):
     # adds any genes to a geneome
     df.append(genes, ignore_index=True)

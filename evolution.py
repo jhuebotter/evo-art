@@ -1,89 +1,38 @@
-import array
-import random
-
-import numpy
-
-from deap import algorithms
 from deap import base
-from deap import benchmarks
 from deap import creator
 from deap import tools
 from genetics import *
-
 import pandas as pd
 
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0,1.0))
-creator.create("Individual", list, fitness=creator.FitnessMax)
-
+def evalOneMax(individual):
+    return sum(individual),
 
 def initIndividual(icls, content):
     return icls(content)
 
 def initPopulation(pcls, ind_init, filename):
-    #with open(filename, "r") as pop_file:
     contents = []
     df = load_genepool(filename)
     for genom in df.values:
         contents.append(list(genom))
     return pcls(ind_init(c) for c in contents)
 
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", list, fitness=creator.FitnessMax)
+
 toolbox = base.Toolbox()
 
-toolbox.register("individual_guess", initIndividual, creator.Individual)
-toolbox.register("population", initPopulation, list, toolbox.individual_guess, "genepool.csv")
-
-#population = toolbox.population_guess()
-
-
-
-
-
-
-
-# Attribute generator
-#toolbox.register("attr_bool", random.random) #, 0, 1)
-# Structure initializers
-#toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 22)
-#toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-
-def load_genepool(filename='genepool.csv'):
-    # loads a genepool from a given file
-    df = pd.read_csv(filename, index_col=0)
-
-    return df
-
-
-
-#toolbox.register("population", tools.initIterate, list, load_genepool)
-
-
-def evalOneMax(individual):
-    print(individual)
-    return sum(individual),
-
-def mutateAddOne(individual, indpb):
-
-    for i in range(len(individual)):
-        if random.random() < indpb:
-            individual[i] += 1
-
-    return individual
+toolbox.register("individual", initIndividual, creator.Individual)
+toolbox.register("population", initPopulation, list, toolbox.individual, "genepool_start.csv")
 
 toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
-#toolbox.register("mutate", mutateAddOne, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
 def main():
     pop = toolbox.population()
-    print(pop)
-
-    df = load_genepool()
-    #df.values = pop
-
-    df.to_csv("test.csv")
 
     # Evaluate the entire population
     fitnesses = list(map(toolbox.evaluate, pop))
@@ -126,13 +75,15 @@ def main():
                 del mutant.fitness.values
 
         # Evaluate the individuals with an invalid fitness
-        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
-        for ind, fit in zip(invalid_ind, fitnesses):
+        #invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+        fitnesses = map(toolbox.evaluate, offspring)
+        for ind, fit in zip(offspring, fitnesses):
             ind.fitness.values = fit
 
         pop[:] = offspring
 
+        pop_genes = pd.DataFrame(pop, columns=load_genepool().columns)
+        pop_genes.to_csv('genepool.csv')
         # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
 
@@ -145,7 +96,6 @@ def main():
         print("  Max %s" % max(fits))
         print("  Avg %s" % mean)
         print("  Std %s" % std)
-        print(fits)
 
     return
 
