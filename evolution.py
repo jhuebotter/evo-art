@@ -8,69 +8,148 @@ from deap import base
 from deap import benchmarks
 from deap import creator
 from deap import tools
+from genetics import *
 
-IND_SIZE = 30
-MIN_VALUE = 4
-MAX_VALUE = 5
-MIN_STRATEGY = 0.5
-MAX_STRATEGY = 3
-
-creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-creator.create("Individual", array.array, typecode="d", fitness=creator.FitnessMin, strategy=None)
-creator.create("Strategy", array.array, typecode="d")
+import pandas as pd
 
 
-# Individual generator
-def generateES(icls, scls, size, imin, imax, smin, smax):
-    ind = icls(random.uniform(imin, imax) for _ in range(size))
-    ind.strategy = scls(random.uniform(smin, smax) for _ in range(size))
-    return ind
+creator.create("FitnessMax", base.Fitness, weights=(1.0,1.0))
+creator.create("Individual", list, fitness=creator.FitnessMax)
 
 
-def checkStrategy(minstrategy):
-    def decorator(func):
-        def wrappper(*args, **kargs):
-            children = func(*args, **kargs)
-            for child in children:
-                for i, s in enumerate(child.strategy):
-                    if s < minstrategy:
-                        child.strategy[i] = minstrategy
-            return children
+def initIndividual(icls, content):
+    return icls(content)
 
-        return wrappper
-
-    return decorator
-
+def initPopulation(pcls, ind_init, filename):
+    #with open(filename, "r") as pop_file:
+    contents = []
+    df = load_genepool(filename)
+    for genom in df.values:
+        contents.append(list(genom))
+    return pcls(ind_init(c) for c in contents)
 
 toolbox = base.Toolbox()
-toolbox.register("individual", generateES, creator.Individual, creator.Strategy,
-                 IND_SIZE, MIN_VALUE, MAX_VALUE, MIN_STRATEGY, MAX_STRATEGY)
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("mate", tools.cxESBlend, alpha=0.1)
-toolbox.register("mutate", tools.mutESLogNormal, c=1.0, indpb=0.03)
+
+toolbox.register("individual_guess", initIndividual, creator.Individual)
+toolbox.register("population", initPopulation, list, toolbox.individual_guess, "genepool.csv")
+
+#population = toolbox.population_guess()
+
+
+
+
+
+
+
+# Attribute generator
+#toolbox.register("attr_bool", random.random) #, 0, 1)
+# Structure initializers
+#toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 22)
+#toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+
+def load_genepool(filename='genepool.csv'):
+    # loads a genepool from a given file
+    df = pd.read_csv(filename, index_col=0)
+
+    return df
+
+
+
+#toolbox.register("population", tools.initIterate, list, load_genepool)
+
+
+def evalOneMax(individual):
+    print(individual)
+    return sum(individual),
+
+def mutateAddOne(individual, indpb):
+
+    for i in range(len(individual)):
+        if random.random() < indpb:
+            individual[i] += 1
+
+    return individual
+
+toolbox.register("evaluate", evalOneMax)
+toolbox.register("mate", tools.cxTwoPoint)
+toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
+#toolbox.register("mutate", mutateAddOne, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
-toolbox.register("evaluate", benchmarks.sphere)
-
-toolbox.decorate("mate", checkStrategy(MIN_STRATEGY))
-toolbox.decorate("mutate", checkStrategy(MIN_STRATEGY))
-
 
 def main():
-    random.seed()
-    MU, LAMBDA = 10, 100
-    pop = toolbox.population(n=MU)
-    hof = tools.HallOfFame(1)
-    stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", numpy.mean)
-    stats.register("std", numpy.std)
-    stats.register("min", numpy.min)
-    stats.register("max", numpy.max)
+    pop = toolbox.population()
+    print(pop)
 
-    pop, logbook = algorithms.eaMuCommaLambda(pop, toolbox, mu=MU, lambda_=LAMBDA,
-                                              cxpb=0.6, mutpb=0.3, ngen=500, stats=stats, halloffame=hof)
+    df = load_genepool()
+    #df.values = pop
 
-    return pop, logbook, hof
+    df.to_csv("test.csv")
+
+    # Evaluate the entire population
+    fitnesses = list(map(toolbox.evaluate, pop))
+    for ind, fit in zip(pop, fitnesses):
+        ind.fitness.values = fit
+
+    # CXPB  is the probability with which two individuals
+    #       are crossed
+    #
+    # MUTPB is the probability for mutating an individual
+    CXPB, MUTPB = 0.5, 0.2
+
+    # Extracting all the fitnesses of
+    fits = [ind.fitness.values[0] for ind in pop]
+
+    # Variable keeping track of the number of generations
+    g = 0
+
+    # Begin the evolution
+    while max(fits) < 100 and g < 1000:
+        # A new generation
+        g = g + 1
+        print("-- Generation %i --" % g)
+
+        # Select the next generation individuals
+        offspring = toolbox.select(pop, len(pop))
+        # Clone the selected individuals
+        offspring = list(map(toolbox.clone, offspring))
+
+        # Apply crossover and mutation on the offspring
+        for child1, child2 in zip(offspring[::2], offspring[1::2]):
+            if random.random() < CXPB:
+                toolbox.mate(child1, child2)
+                del child1.fitness.values
+                del child2.fitness.values
+
+        for mutant in offspring:
+            if random.random() < MUTPB:
+                toolbox.mutate(mutant)
+                del mutant.fitness.values
+
+        # Evaluate the individuals with an invalid fitness
+        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+        fitnesses = map(toolbox.evaluate, invalid_ind)
+        for ind, fit in zip(invalid_ind, fitnesses):
+            ind.fitness.values = fit
+
+        pop[:] = offspring
+
+        # Gather all the fitnesses in one list and print the stats
+        fits = [ind.fitness.values[0] for ind in pop]
+
+        length = len(pop)
+        mean = sum(fits) / length
+        sum2 = sum(x * x for x in fits)
+        std = abs(sum2 / length - mean * 2) * 0.5
+
+        print("  Min %s" % min(fits))
+        print("  Max %s" % max(fits))
+        print("  Avg %s" % mean)
+        print("  Std %s" % std)
+        print(fits)
+
+    return
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
+

@@ -30,16 +30,17 @@ snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
-instruments = [synths, low_percs, snares, high_percs, bass, synths, high_percs, synths, synths, bass]
+instruments = [synths, bass, snares, high_percs, low_percs, synths, high_percs, synths, synths, bass]
 
 # Set the height and width of the screen
 size = [1200, 800]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
+linewidth = 1
 
 # Set the scaling factor of the visualization between 0.1 and 0.5
-SCALING_FACTOR = 0.4
+SCALING_FACTOR = 0.3
 
 # Set the maximum iterations per second
 fps = 60
@@ -54,7 +55,8 @@ def main():
     # ---  Hhere we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(5, genes)
+    df = make_genepool(6, genes)
+    print(df.head())
     df.to_csv('genepool.csv')
 
     #genepool = df.to_dict(orient='records')
@@ -93,7 +95,6 @@ def main():
 
         df = pd.read_csv('genepool.csv', index_col=0)
         genepool = df.to_dict(orient='records')
-
         # All drawing code happens after the for loop and but
         # inside the main while done==False loop.
         # Clear the screen and set the screen background
@@ -101,7 +102,8 @@ def main():
         pygame.draw.polygon(screen, WHITE, pos_line, 1)
         # This is where the magic happens
         for genes in genepool:
-            make_polygon(genes, t0, delta_t)
+            phenotype = make_phenotype(genes)
+            make_polygon(phenotype, t0, delta_t)
 
 
         # This MUST happen after all the other drawing commands.
@@ -167,8 +169,8 @@ def make_polygon(genes, t, delta_t):
         pos = []
         for o in range(genes['order']):
             polarcorner = [genes['radius'], o*(360/genes['order'])]
-            prev_polarcorner = rotatePoint(polarcorner, prev_angle, center=genes['center'])
-            polarcorner = rotatePoint(polarcorner, current_angle, center=genes['center'])
+            prev_polarcorner = rotatePoint(polarcorner, prev_angle, center=center)
+            polarcorner = rotatePoint(polarcorner, current_angle, center=center)
             prev_polarcorner[1] = round(prev_polarcorner[1] % 360., 3)
             polarcorner[1] = round(polarcorner[1] % 360., 3)
             delta = abs(polarcorner[1] - prev_polarcorner[1])
@@ -176,8 +178,8 @@ def make_polygon(genes, t, delta_t):
                 play_synth(genes)
             corner = pol2cart(polarcorner[0], polarcorner[1])
             pos.append(corner)
-        #print((genes['red'], genes['red'], genes['blue']))
-        pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, genes['line'])
+        print((genes['red'], genes['red'], genes['blue']))
+        pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, linewidth)
 
 
     return

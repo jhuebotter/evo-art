@@ -6,8 +6,8 @@ from psonic import *
 #synths = ['blade', 'sine', 'dull_bell', 'saw', 'tb303']
 
 # instuments
-synths = ['pluck', 'mod_pulse', 'mod_sine', 'pretty_bell']
-#synths = ['sine', 'sine', 'sine']
+synths = ['pluck', 'mod_pulse', 'mod_sine', 'piano']
+#rsynths = ['pluck', 'pluck', 'pluck', 'pluck']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
 low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
 #snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
@@ -74,8 +74,8 @@ def setup_listeners():
         print('Setting up listener for: ', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do            
-            a, p = sync "/osc/trigger/{sample}"
-            sample :{sample}, amp: a, pitch: p, lpf: 70, pre_amp: 0.5       
+            a, = sync "/osc/trigger/{sample}"
+            sample :{sample}, amp: a, lpf: 70, pre_amp: 0.5       
             end
             end""")
     for snare in snares:
