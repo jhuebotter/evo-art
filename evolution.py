@@ -1,28 +1,61 @@
+import array
 import random
 
+import numpy
+
+from deap import algorithms
 from deap import base
+from deap import benchmarks
 from deap import creator
 from deap import tools
+from genetics import *
 
 import pandas as pd
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+
+creator.create("FitnessMax", base.Fitness, weights=(1.0,1.0))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
+
+def initIndividual(icls, content):
+    return icls(content)
+
+def initPopulation(pcls, ind_init, filename):
+    #with open(filename, "r") as pop_file:
+    contents = []
+    df = load_genepool(filename)
+    for genom in df.values:
+        contents.append(list(genom))
+    return pcls(ind_init(c) for c in contents)
+
 toolbox = base.Toolbox()
+
+toolbox.register("individual_guess", initIndividual, creator.Individual)
+toolbox.register("population", initPopulation, list, toolbox.individual_guess, "genepool.csv")
+
+#population = toolbox.population_guess()
+
+
+
+
+
+
+
 # Attribute generator
-toolbox.register("attr_bool", random.random) #, 0, 1)
+#toolbox.register("attr_bool", random.random) #, 0, 1)
 # Structure initializers
-toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 100)
+#toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, 22)
 #toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 def load_genepool(filename='genepool.csv'):
     # loads a genepool from a given file
     df = pd.read_csv(filename, index_col=0)
 
-    return df.values
+    return df
 
-toolbox.register("population", tools.initIterate, list, load_genepool)
+
+
+#toolbox.register("population", tools.initIterate, list, load_genepool)
 
 
 def evalOneMax(individual):
@@ -46,6 +79,11 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 def main():
     pop = toolbox.population()
     print(pop)
+
+    df = load_genepool()
+    #df.values = pop
+
+    df.to_csv("test.csv")
 
     # Evaluate the entire population
     fitnesses = list(map(toolbox.evaluate, pop))
@@ -101,7 +139,7 @@ def main():
         length = len(pop)
         mean = sum(fits) / length
         sum2 = sum(x * x for x in fits)
-        std = abs(sum2 / length - mean ** 2) ** 0.5
+        std = abs(sum2 / length - mean * 2) * 0.5
 
         print("  Min %s" % min(fits))
         print("  Max %s" % max(fits))
@@ -114,3 +152,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
