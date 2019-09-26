@@ -8,12 +8,15 @@ from psonic import *
 # instuments
 synths = ['pluck', 'mod_pulse', 'mod_sine', 'piano']
 #rsynths = ['pluck', 'pluck', 'pluck', 'pluck']
-high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
-low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
+#high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
+high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell']
+#low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
+low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'tabla_re']
 #snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 snares = ['drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
+
 
 
 
@@ -27,15 +30,14 @@ def setup_listeners2(df, instr):
 
 
 
+
 def setup_listeners():
     print("setting up metronome TICK")
 
     run("""use_debug false
-            in_thread do
             live_loop :metronome do
                 cue :tick
                 sleep 0.0625
-            end
             end""")
 
     for synth in synths:
@@ -105,19 +107,19 @@ def play_synth(genes):
     #print('Synth: ', synths[genes['synth']])
     print('Note:  ', genes['note'])
     #print('Radius:', genes['radius'])
-    if genes['instrument'] <= 2:
-        print('Synth: ', synths[genes['synth']])
-        send_message(f"/trigger/{synths[genes['synth']]}", genes['note'], genes['cutoff'], genes['release'],
-                     genes['attack'], genes['decay'], genes['mix'], genes['mod_range'])
-    elif genes['instrument'] == 3:
-        print('Low Perc: ', low_percs[genes['low_perc']])
-        send_message(f"/trigger/{low_percs[genes['low_perc']]}", genes['amp'])
-    elif genes['instrument'] == 4:
-        print(high_percs[genes['high_perc']])
-        send_message(f"/trigger/{high_percs[genes['high_perc']]}", genes['amp'], genes['mix'], genes['mix_echo'])
-    elif genes['instrument'] == 5:
-        print('Snare      ', snares[genes['snare']])
-        send_message(f"/trigger/{snares[genes['snare']]}", genes['amp'])
+    if genes['nature'] == 0:
+        print('Bass playing:  ', bass[genes['instrument']])
+        send_message(f"/trigger/{bass[genes['instrument']]}", genes['amp'], genes['pitch'])
+    elif genes['nature'] == 1:
+        print('Low Perc: ', low_percs[genes['instrument']])
+        send_message(f"/trigger/{low_percs[genes['instrument']]}", genes['amp'])
+    elif genes['nature'] == 2:
+        print(high_percs[genes['instrument']])
+        send_message(f"/trigger/{high_percs[genes['instrument']]}", genes['amp'], genes['mix_reverb'], genes['mix_echo'])
+    elif genes['nature'] >= 3:
+        print('Synth: ', synths[genes['instrument']])
+        send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['release'],
+                     genes['attack'], genes['mix_reverb'], genes['mod_range'])
 
 
 

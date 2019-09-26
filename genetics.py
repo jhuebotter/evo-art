@@ -59,9 +59,10 @@ def make_phenotype(genes):
                  bpm=int(15*2**int(genes['bpm']*3)),
                  total_offset=(1/16) * int(genes['total_offset'] * 16) * 0.5**int(genes['bpm']*3),
                  initial_offset=(1/16) * int(genes['initial_offset'] * 16) * 0.5**int(genes['bpm']*3),
-                 red=int(genes['red'] * 155 + 100), green=int(genes['green'] * 155 + 100), blue=int(genes['blue'] * 155 + 100),
-                 nature=int(genes['nature']*5),
-                 instrument=int(genes['instrument']*5),
+                 red=int(genes['red'] * 155 + 100), green=int(genes['green'] * 155 + 100),
+                 blue=int(genes['blue'] * 155 + 100),
+                 nature=int(genes['nature']*4),
+                 instrument=int(genes['instrument']*4),
                  # this is all relevant for a synth
                  amp=round(genes['amp'] / 3 + 0.5, 2),
                  cutoff=int(genes['cutoff'] * 70 + 30 ),
