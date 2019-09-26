@@ -21,17 +21,18 @@ instruments = [synths, low_percs, snares, high_percs]
 
 def setup_listeners():
     print("setting up metronome TICK")
-    run("""live_loop :tick do
+    run( """#use_osc "localhost",4560
+            live_loop :tick do
                 cue :tick
                 sleep 0.0625
             end""")
 
 
     for synth in synths:
-        print("setting up listener for", synth)
+        print("setting up listener for: ", synth)
         run(f"""live_loop :{synth}, sync: :tick do
-            use_real_time
-            n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
+            #use_real_time
+            n, c, r, a, p, m, m2 = sync "/osc*/trigger/{synth}"
             with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
             synth :{synth}, note: n, cutoff: c, attack: a, release: r, pan: p, mod_range: m2
             end
@@ -40,34 +41,36 @@ def setup_listeners():
     for sample in low_percs:
         print('Setting up listener for: ', sample)
         run(f"""live_loop :{sample}, sync: :tick do
-            use_real_time              
-            a, = sync "/osc/trigger/{sample}"
+            #use_real_time              
+            a, = sync "/osc*/trigger/{sample}"
             sample :{sample}, amp: a, pre_amp: 0.5         
             end""")
 
     for sample in high_percs:
         print('Setting up listener for: ', sample)
         run(f"""live_loop :{sample}, sync: :tick do
-            use_real_time            
-            a, m, m_echo = sync "/osc/trigger/{sample}"
+            #use_real_time            
+            a, m, m_echo = sync "/osc*/trigger/{sample}"
             with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
             with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
             sample :{sample}, amp: a, pre_amp: 0.5
             end
             end      
             end""")
+
     for sample in bass:
         print('Setting up listener for: ', sample)
         run(f"""live_loop :{sample}, sync: :tick do            
-            use_real_time  
-            a, p = sync "/osc/trigger/{sample}"
+            #use_real_time  
+            a, p = sync "/osc*/trigger/{sample}"
             sample :{sample}, amp: a, pitch: p, lpf: 70, pre_amp: 0.5       
             end """)
+
     for snare in snares:
         print('Setting up listener for: ', snare)
         run(f"""live_loop :{snare}, sync: :tick do
-            use_real_time           
-            a, = sync "/osc/trigger/{snare}"
+            #use_real_time           
+            a, = sync "/osc*/trigger/{snare}"
             sample :{snare}, amp: a        
             end""")
 
