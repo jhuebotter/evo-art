@@ -3,10 +3,13 @@ from deap import creator
 from deap import tools
 from genetics import *
 import pandas as pd
+import time
 
 
 def evalOneMax(individual):
-    return sum(individual),
+    x = sum(individual)
+    print(x)
+    return x,
 
 def initIndividual(icls, content):
     return icls(content)
@@ -18,18 +21,19 @@ def initPopulation(pcls, ind_init, filename):
         contents.append(list(genom))
     return pcls(ind_init(c) for c in contents)
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("FitnessMax", base.Fitness, weights=(0.00,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
 
 toolbox.register("individual", initIndividual, creator.Individual)
-toolbox.register("population", initPopulation, list, toolbox.individual, "genepool_start.csv")
+toolbox.register("population", initPopulation, list, toolbox.individual, "genepool.csv")
 
 toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
-toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=0., up=1., indpb=0.05)
+#toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
+toolbox.register("select", tools.selTournament)
 
 def main():
     pop = toolbox.population()
@@ -43,7 +47,7 @@ def main():
     #       are crossed
     #
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0.5, 0.2
+    CXPB, MUTPB = 0.5, 0.5
 
     # Extracting all the fitnesses of
     fits = [ind.fitness.values[0] for ind in pop]
@@ -52,19 +56,27 @@ def main():
     g = 0
 
     # Begin the evolution
-    while max(fits) < 100 and g < 1000:
+    done = False
+    while not done: #max(fits) < 100 and g < 1000:
         # A new generation
+        time.sleep(1)
         g = g + 1
+
+        CXPB = 0.
+        if g % 20 == 0:
+            CXPB = 0.5
+
         print("-- Generation %i --" % g)
 
         # Select the next generation individuals
-        offspring = toolbox.select(pop, len(pop))
+        offspring = toolbox.select(pop, len(pop), len(pop))
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
             if random.random() < CXPB:
+                print('crossing')
                 toolbox.mate(child1, child2)
                 del child1.fitness.values
                 del child2.fitness.values

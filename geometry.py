@@ -33,11 +33,11 @@ vox = ['ambi_choir']
 instruments = [synths, bass, snares, high_percs, low_percs, synths, high_percs, synths, synths, bass]
 
 # Set the height and width of the screen
-size = [1200, 800]
+size = [1920, 1080]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
-linewidth = 1
+linewidth = 3
 
 # Set the scaling factor of the visualization between 0.1 and 0.5
 SCALING_FACTOR = 0.3
@@ -55,7 +55,7 @@ def main():
     # ---  Hhere we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(4, genes)
+    df = make_genepool(10, genes)
     print(df.head())
     df.to_csv('genepool.csv')
 
@@ -93,7 +93,10 @@ def main():
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
 
-        df = pd.read_csv('genepool.csv', index_col=0)
+        try:
+            df = pd.read_csv('genepool.csv', index_col=0)
+        except:
+            print('error')
         genepool = df.to_dict(orient='records')
         # All drawing code happens after the for loop and but
         # inside the main while done==False loop.
@@ -178,7 +181,7 @@ def make_polygon(genes, t, delta_t):
                 play_synth(genes)
             corner = pol2cart(polarcorner[0], polarcorner[1])
             pos.append(corner)
-        print((genes['red'], genes['red'], genes['blue']))
+        #print((genes['red'], genes['red'], genes['blue']))
         pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, linewidth)
 
 
