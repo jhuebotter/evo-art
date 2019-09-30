@@ -7,12 +7,8 @@ from threading import Thread
 from genetics import *
 from psonic import *
 
-
 # Define some notes for conversion
 C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B = range(24, 36)
-
-# Initialize the game engine
-pygame.init()
 
 # Define the colors we will use in RGB format
 BLACK = (0, 0, 0)
@@ -20,7 +16,6 @@ WHITE = (255, 255, 255)
 BLUE = (100, 100, 200)
 GREEN = (100, 200, 100)
 RED = (200, 100, 100)
-
 
 # instuments
 synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
@@ -30,22 +25,26 @@ snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
-instruments = [synths, bass, snares, high_percs, low_percs, synths, high_percs, synths, synths, bass]
+instruments = [synths, bass, snares, high_percs, low_percs, vox]
+
+# Initialize the game engine
+pygame.init()
+pygame.display.set_caption("Evo Art")
 
 # Set the height and width of the screen
 size = [1920, 1080]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
-linewidth = 3
 
 # Set the scaling factor of the visualization between 0.1 and 0.5
-SCALING_FACTOR = 0.3
+SCALING_FACTOR = 0.5
+
+# How thick are the lines on the screen
+LINEWIDTH = 2
 
 # Set the maximum iterations per second
-fps = 60
-
-pygame.display.set_caption("Evo Art")
+FPS = 60
 
 
 def main():
@@ -55,8 +54,8 @@ def main():
     # ---  Hhere we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(10, genes)
-    print(df.head())
+    df = make_genepool(3, genes)
+    #print(df.head())
     df.to_csv('genepool.csv')
 
     #genepool = df.to_dict(orient='records')
@@ -68,8 +67,6 @@ def main():
     #setup_listeners2(df, df['instrument'].values)
     setup_listeners()
 
-
-
     # get some time info
     start = time.time()
     now = time.time()
@@ -80,7 +77,7 @@ def main():
 
         # This limits the while loop to a max of 10 times per second.
         # Leave this out and we will use all CPU we can.
-        clock.tick(fps)
+        clock.tick(FPS)
 
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start
@@ -98,6 +95,7 @@ def main():
         except:
             print('error')
         genepool = df.to_dict(orient='records')
+
         # All drawing code happens after the for loop and but
         # inside the main while done==False loop.
         # Clear the screen and set the screen background
@@ -182,7 +180,7 @@ def make_polygon(genes, t, delta_t):
             corner = pol2cart(polarcorner[0], polarcorner[1])
             pos.append(corner)
         #print((genes['red'], genes['red'], genes['blue']))
-        pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, linewidth)
+        pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, LINEWIDTH)
 
 
     return

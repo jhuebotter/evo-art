@@ -8,7 +8,6 @@ import time
 
 def evalOneMax(individual):
     x = sum(individual)
-    print(x)
     return x,
 
 def initIndividual(icls, content):
@@ -31,7 +30,7 @@ toolbox.register("population", initPopulation, list, toolbox.individual, "genepo
 
 toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=0., up=1., indpb=0.05)
+toolbox.register("mutate", tools.mutPolynomialBounded, eta=1., low=0., up=1., indpb=0.2)
 #toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
 toolbox.register("select", tools.selTournament)
 
@@ -45,9 +44,8 @@ def main():
 
     # CXPB  is the probability with which two individuals
     #       are crossed
-    #
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0.5, 0.5
+    CXPB, MUTPB = 0., 0.5
 
     # Extracting all the fitnesses of
     fits = [ind.fitness.values[0] for ind in pop]
@@ -59,12 +57,11 @@ def main():
     done = False
     while not done: #max(fits) < 100 and g < 1000:
         # A new generation
-        time.sleep(1)
         g = g + 1
 
-        CXPB = 0.
-        if g % 20 == 0:
-            CXPB = 0.5
+        #CXPB = 0.5
+        #if g % 20 == 0:
+        #    CXPB = 0.5
 
         print("-- Generation %i --" % g)
 
@@ -104,10 +101,12 @@ def main():
         sum2 = sum(x * x for x in fits)
         std = abs(sum2 / length - mean * 2) * 0.5
 
-        print("  Min %s" % min(fits))
-        print("  Max %s" % max(fits))
-        print("  Avg %s" % mean)
-        print("  Std %s" % std)
+        #print("  Min %s" % min(fits))
+        #print("  Max %s" % max(fits))
+        #print("  Avg %s" % mean)
+        #print("  Std %s" % std)
+
+        time.sleep(1)
 
     return
 
