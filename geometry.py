@@ -55,7 +55,7 @@ def main():
     # ---  Here we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(4, genes)
+    df = make_genepool(6, genes)
     #print(df.head())
     df.to_csv('genepool.csv')
 

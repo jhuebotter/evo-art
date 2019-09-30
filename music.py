@@ -35,6 +35,7 @@ def setup_listeners():
     print("setting up metronome TICK")
 
     run("""use_debug false
+            use_real_time
             live_loop :metronome do
                 cue :tick
                 sleep 0.0625

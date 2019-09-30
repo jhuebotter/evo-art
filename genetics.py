@@ -1,5 +1,8 @@
 import random
 import pandas as pd
+import json
+
+data_path = 'data/'
 
 size = [1920, 1080]
 center = [size[0] / 2, size[1] / 2]

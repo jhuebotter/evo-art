@@ -6,6 +6,7 @@ import pandas as pd
 import time
 import json
 
+data_path = 'data/'
 
 def evalOneMax(individual):
     x = sum(individual)
@@ -37,8 +38,13 @@ toolbox.register("mutate", tools.mutPolynomialBounded, eta=.5, low=0., up=1., in
 toolbox.register("select", tools.selNSGA2)
 
 def main():
+    # Init population
     pop = toolbox.population()
-    #json = json.load("config.json")
+
+    # now load in JSON configuration file
+    with open(data_path + 'test_config.json') as f:
+        conf_file = json.load(f)
+        print(conf_file['mut_rate'])
 
     # Evaluate the entire population
     fitnesses = list(map(toolbox.evaluate, pop))
@@ -48,7 +54,7 @@ def main():
     # CXPB  is the probability with which two individuals
     #       are crossed
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0., 0.5
+    CXPB, MUTPB = 0., conf_file['mut_rate']
 
     # Extracting all the fitnesses of
     fits = [ind.fitness.values[0] for ind in pop]
@@ -109,11 +115,14 @@ def main():
         #print("  Avg %s" % mean)
         #print("  Std %s" % std)
 
-        time.sleep(2)
+
+        # now load in JSON configuration file
+        with open(data_path + 'test_config.json') as f:
+            conf_file = json.load(f)
+            time.sleep(conf_file['gen_length'])
 
     return
 
 
 if __name__ == '__main__':
     main()
-

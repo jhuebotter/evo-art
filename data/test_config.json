@@ -1,0 +1,6 @@
+{
+    "mut_rate" : 0.4,
+    "gen_length" : 4,
+    "bpm_base" : 15,
+    "genre" : "test"
+}
