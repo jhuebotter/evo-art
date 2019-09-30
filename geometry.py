@@ -68,8 +68,6 @@ def main():
     #setup_listeners2(df, df['instrument'].values)
     setup_listeners()
 
-
-
     # get some time info
     start = time.time()
     now = time.time()
@@ -114,8 +112,7 @@ def main():
 
     # Stop running processes in Sonic Pi
     run("""'/stop-all-jobs'""")
-    #run("""use_osc "localhost", 5000
-    #        osc '/stop'""")
+
     print('Stopped program')
 
     return
