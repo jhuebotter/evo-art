@@ -6,13 +6,10 @@ from music import *
 from threading import Thread
 from genetics import *
 from psonic import *
-
+import json
 
 # Define some notes for conversion
 C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B = range(24, 36)
-
-# Initialize the game engine
-pygame.init()
 
 # Define the colors we will use in RGB format
 BLACK = (0, 0, 0)
@@ -20,7 +17,6 @@ WHITE = (255, 255, 255)
 BLUE = (100, 100, 200)
 GREEN = (100, 200, 100)
 RED = (200, 100, 100)
-
 
 # instuments
 synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
@@ -30,33 +26,37 @@ snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
-instruments = [synths, bass, snares, high_percs, low_percs, synths, high_percs, synths, synths, bass]
+instruments = [synths, bass, snares, high_percs, low_percs, vox]
+
+# Initialize the game engine
+pygame.init()
+pygame.display.set_caption("Evo Art")
 
 # Set the height and width of the screen
-size = [1200, 800]
+size = [1300, 720]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
-linewidth = 1
 
 # Set the scaling factor of the visualization between 0.1 and 0.5
 SCALING_FACTOR = 0.3
 
-# Set the maximum iterations per second
-fps = 60
+# How thick are the lines on the screen
+LINEWIDTH = 1
 
-pygame.display.set_caption("Evo Art")
+# Set the maximum iterations per second
+FPS = 60
 
 
 def main():
 
     clock = pygame.time.Clock()
 
-    # ---  Hhere we init the genes -------------------- #
+    # ---  Here we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
     df = make_genepool(4, genes)
-    print(df.head())
+    #print(df.head())
     df.to_csv('genepool.csv')
 
     #genepool = df.to_dict(orient='records')
@@ -78,7 +78,7 @@ def main():
 
         # This limits the while loop to a max of 10 times per second.
         # Leave this out and we will use all CPU we can.
-        clock.tick(fps)
+        clock.tick(FPS)
 
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start
@@ -91,8 +91,12 @@ def main():
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
 
-        df = pd.read_csv('genepool.csv', index_col=0)
+        try:
+            df = pd.read_csv('genepool.csv', index_col=0)
+        except:
+            print('error loading genepool')
         genepool = df.to_dict(orient='records')
+
         # All drawing code happens after the for loop and but
         # inside the main while done==False loop.
         # Clear the screen and set the screen background
@@ -111,7 +115,8 @@ def main():
     pygame.quit()
 
     # Stop running processes in Sonic Pi
-    run("""'/stop-all-jobs'""")
+    #run("sync '/stop-all-jobs'")
+    stop()
 
     print('Stopped program')
 
@@ -175,8 +180,8 @@ def make_polygon(genes, t, delta_t):
                 play_synth(genes)
             corner = pol2cart(polarcorner[0], polarcorner[1])
             pos.append(corner)
-        print((genes['red'], genes['red'], genes['blue']))
-        pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, linewidth)
+        #print((genes['red'], genes['red'], genes['blue']))
+        pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, LINEWIDTH)
 
 
     return
