@@ -1,11 +1,6 @@
 from psonic import *
 
-#synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
-#synths = ['piano', 'mod_daw', 'bass']
-
-#synths = ['blade', 'sine', 'dull_bell', 'saw', 'tb303']
-
-# instuments
+# instruments
 synths = ['pluck', 'mod_pulse', 'mod_sine', 'piano']
 #rsynths = ['pluck', 'pluck', 'pluck', 'pluck']
 #high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
@@ -18,20 +13,13 @@ bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
 
-
-
-instruments = [synths, bass, low_percs, high_percs, synths, synths, high_percs, synths, bass, bass]
-
-
-def setup_listeners2(df, instr):
-    for instrument in instr:
-        print("setting up listener for")
-
-
-
+instruments = [synths, bass, low_percs, high_percs]
 
 
 def setup_listeners():
+
+    # set up a number of listening live loops at the sonic pi server end
+
     print("setting up metronome TICK")
 
     run("""use_debug false
@@ -41,7 +29,7 @@ def setup_listeners():
             end""")
 
     for synth in synths:
-        print("setting up listener for", synth)
+        print("setting up listener for:", synth)
         run(f"""in_thread do
             live_loop :{synth}, sync: :tick do
             n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
@@ -52,7 +40,7 @@ def setup_listeners():
             end""")
 
     for sample in low_percs:
-        print('Setting up listener for: ', sample)
+        print('Setting up listener for:', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do              
             a, = sync "/osc/trigger/{sample}"
@@ -61,7 +49,7 @@ def setup_listeners():
             end""")
 
     for sample in high_percs:
-        print('Setting up listener for: ', sample)
+        print('Setting up listener for:', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do           
             a, m, m_echo = sync "/osc/trigger/{sample}"
@@ -73,7 +61,7 @@ def setup_listeners():
             end
             end""")
     for sample in bass:
-        print('Setting up listener for: ', sample)
+        print('Setting up listener for:', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do            
             a, = sync "/osc/trigger/{sample}"
@@ -81,49 +69,50 @@ def setup_listeners():
             end
             end""")
     for snare in snares:
-        print('Setting up listener for: ', snare)
+        print('Setting up listener for:', snare)
         run(f"""live_loop :{snare}, sync: :tick do          
             a, = sync "/osc/trigger/{snare}"
             sample :{snare}, amp: a        
             end""")
 
 
+def stop_all_listeners():
 
-def play_piano(genes):
-    send_message('/trigger/piano', genes['note'], genes['mix']) #genes['amp'])
-    return
+    # Stop running processes in Sonic Pi
 
-#def play_mod_synth(genes):
-#    send_message('/trigger/mod_synth', genes['note'], genes['cutoff'], genes['amp'], genes['sustain'], genes['release'], genes['mod_pulse_width'])
-#    return
+    run("/stop-all-jobs")
+
 
 def play_synth(genes):
-    #print()
-    #print('Nature:   ', genes['nature'])
-    print('Instrument', instruments[genes['instrument']])
-    #print('Low Perc: ', low_percs[genes['low_perc']])
-    #print('High Perc: ', high_percs[genes['high_perc']])
-    #print('Bass     : ', bass[genes['bass']])
-    #print('Synth: ', synths[genes['synth']])
+
+    # send commands to the sonic pi server to play sound
+
+    print(genes['instrument'])
     print('Note:  ', genes['note'])
-    #print('Radius:', genes['radius'])
+
     if genes['nature'] == 0:
-        print('Bass playing:  ', bass[genes['instrument']])
+        print('Bass: ', bass[genes['instrument']])
         send_message(f"/trigger/{bass[genes['instrument']]}", genes['amp'], genes['pitch'])
     elif genes['nature'] == 1:
         print('Low Perc: ', low_percs[genes['instrument']])
         send_message(f"/trigger/{low_percs[genes['instrument']]}", genes['amp'])
     elif genes['nature'] == 2:
-        print(high_percs[genes['instrument']])
+        print('High Perc: ', high_percs[genes['instrument']])
         send_message(f"/trigger/{high_percs[genes['instrument']]}", genes['amp'], genes['mix_reverb'], genes['mix_echo'])
     elif genes['nature'] >= 3:
         print('Synth: ', synths[genes['instrument']])
         send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['release'],
                      genes['attack'], genes['mix_reverb'], genes['mod_range'])
 
+    return
 
+'''
+def setup_listeners2():
+    for instrument in instr:
+        print("setting up listener for")
+'''
 
-    '''
+'''
     if genes['nature'] <= 3:
         print(' ')
         print('Synth Playing: ', synths[genes['synth']])
@@ -138,9 +127,7 @@ def play_synth(genes):
         print('\n---SNARE')
         print('SNARE          : ', snares[genes['snare']])
         send_message(f"/trigger/{snares[genes['snare']]}", genes['amp'])
-    '''
-    ##################
-    '''
+
     if genes['nature'] <= 45:
         print(' ')
         print('Synth Playing: ', synths[genes['synth']])
@@ -164,18 +151,6 @@ def play_synth(genes):
         print('\n---PERC HIGH')
         print(high_percs[genes['high_perc']])
         send_message(f"/trigger/{high_percs[genes['high_perc']]}", genes['amp'], genes['mix'], genes['mix_echo'])
-    '''
-    return
-
-
-
-
-
 '''
 
-live_loop :piano do
-  n, c, a, s, r = sync "/osc/trigger/piano"
-  synth :piano, note: n, cutoff: c, amp: a, sustain: s, release: r
-end
 
-'''

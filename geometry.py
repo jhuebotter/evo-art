@@ -6,34 +6,10 @@ from music import *
 from genetics import *
 from psonic import *
 
-# Define some notes for conversion
-C, Cs, D, Ds, E, F, Fs, G, Gs, A, As, B = range(24, 36)
-
-# Define the colors we will use in RGB format
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BLUE = (100, 100, 200)
-GREEN = (100, 200, 100)
-RED = (200, 100, 100)
-
-# instuments
-synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
-high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
-low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
-snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
-bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
-vox = ['ambi_choir']
-
-instruments = [synths, bass, snares, high_percs, low_percs, vox]
-
-# Initialize the game engine
-pygame.init()
-pygame.display.set_caption("Evo Art")
 
 # Set the height and width of the screen
 size = [1080, 1080]
 center = [size[0] / 2, size[1] / 2]
-screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
 
 # Set the scaling factor of the visualization between 0.1 and 0.5
@@ -45,6 +21,14 @@ LINEWIDTH = 2
 # Set the maximum iterations per second
 FPS = 60
 
+# Define some colors for the screen
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+# Initialize the game engine
+pygame.init()
+pygame.display.set_caption("Evo Art")
+screen = pygame.display.set_mode(size)
 
 def main():
 
@@ -106,15 +90,13 @@ def main():
             phenotype = make_phenotype(genes)
             make_polygon(phenotype, t0, delta_t)
 
-
         # This MUST happen after all the other drawing commands.
         pygame.display.flip()
 
     # Be IDLE friendly
     pygame.quit()
 
-    # Stop running processes in Sonic Pi
-    run("""'/stop-all-jobs'""")
+    stop_all_listeners()
     #run("""use_osc "localhost", 5000
     #        osc '/stop'""")
     print('Stopped program')
@@ -122,18 +104,10 @@ def main():
     return
 
 
-def play_sound(genes):
-    print()
-    print('Note:  ', genes['note'])
-    print('Radius:', genes['radius'])
-    #process = Thread(target=play_piano, args=[genes])
-    #process.start()
-    play_synth(genes)
-    return
-
-
 def pol2cart(rho, phi, center=center):
+
     # get cartesian coordinates from polar
+
     x = center[1] + rho * math.cos(math.radians(phi + 180))
     y = center[0] - rho * math.sin(math.radians(phi + 180))
 
@@ -141,13 +115,18 @@ def pol2cart(rho, phi, center=center):
 
 
 def rotatePoint(polarcorner, angle, center=center):
+
     # the name explains this pretty well i think
+
     newPolarcorner = [polarcorner[0], polarcorner[1] + angle]
 
     return newPolarcorner
 
 
 def make_polygon(genes, t, delta_t):
+
+    # Now this is where the magic happens...
+
     for i in range(genes['number']):
         factor = round(1. / math.cos(math.radians(180./genes['order'])), 3)
 
@@ -172,11 +151,6 @@ def make_polygon(genes, t, delta_t):
                 play_synth(genes)
             corner = pol2cart(polarcorner[0], polarcorner[1])
             pos.append(corner)
-        #print((genes['red'], genes['red'], genes['blue']))
         pygame.draw.polygon(screen, (genes['red'], genes['green'], genes['blue']), pos, LINEWIDTH)
 
-
     return
-
-#if __name__ == "__main__":
-    #main()

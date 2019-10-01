@@ -1,24 +1,31 @@
-from deap import base
-from deap import creator
-from deap import tools
+from deap import base, creator, tools
 from genetics import *
 import pandas as pd
 import time
 
 
 def evalOneMax(individual):
+
+    # This is the fitness function
+
     x = sum(individual)
+
     return x,
 
 def initIndividual(icls, content):
+
+    # How to make an individual
+
     return icls(content)
 
 def initPopulation(pcls, ind_init, filename):
-    contents = []
+
+    # How to make a population
+
     df = load_genepool(filename)
-    for genom in df.values:
-        contents.append(list(genom))
-    return pcls(ind_init(c) for c in contents)
+
+    return pcls(ind_init(c) for c in df.values)
+
 
 creator.create("FitnessMax", base.Fitness, weights=(0.00,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -32,7 +39,8 @@ toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutPolynomialBounded, eta=1., low=0., up=1., indpb=0.2)
 #toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
-toolbox.register("select", tools.selTournament)
+toolbox.register("select", tools.selRandom)
+
 
 def main():
     pop = toolbox.population()
@@ -66,7 +74,7 @@ def main():
         print("-- Generation %i --" % g)
 
         # Select the next generation individuals
-        offspring = toolbox.select(pop, len(pop), len(pop))
+        offspring = toolbox.select(pop, len(pop)) #, len(pop))
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
 
@@ -89,10 +97,12 @@ def main():
         for ind, fit in zip(offspring, fitnesses):
             ind.fitness.values = fit
 
-        pop[:] = offspring
+        #pop[:] = offspring
+        pop = offspring
 
         pop_genes = pd.DataFrame(pop, columns=load_genepool().columns)
         pop_genes.to_csv('genepool.csv')
+
         # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
 
@@ -109,8 +119,3 @@ def main():
         time.sleep(1)
 
     return
-
-
-#if __name__ == '__main__':
-    #main()
-
