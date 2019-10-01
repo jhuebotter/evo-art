@@ -1,42 +1,35 @@
-import threading
 import time
-import pygame
-import math
-import time
-import pandas as pd
-from music import *
-from threading import Thread
-from genetics import *
-from psonic import *
+import multiprocessing
+import sys
 
-exitFlag = 0
+def run_geometry():
+   import geometry
+   geometry.main()
 
-class Viz (threading.Thread):
-   def __init__(self, threadID, name, counter):
-      threading.Thread.__init__(self)
-      self.threadID = threadID
-      self.name = name
-      self.counter = counter
-   def run(self):
-      print "Starting " + self.name
+def run_evolution():
+   import evolution
+   evolution.main()
+
+def run_config(sin):
+   import config
+   config.main(sin)
+
+if __name__ == '__main__':
+   sin = sys.stdin.fileno()
+
+   geo_thread = multiprocessing.Process(name='geo_thread', target=run_geometry)
+   evo_thread = multiprocessing.Process(name='evo_thread', target=run_evolution)
+   config_thread = multiprocessing.Process(name='config_thread', target=run_config, args=(sin,))
+
+   geo_thread.start()
+   evo_thread.start()
+   config_thread.start()
+
+   while geo_thread.is_alive() and config_thread.is_alive():
+      time.sleep(1)
+
+   geo_thread.terminate()
+   evo_thread.terminate()
+   config_thread.terminate()
 
 
-      print "Exiting " + self.name
-
-def print_time(threadName, counter, delay):
-   while counter:
-      if exitFlag:
-         threadName.exit()
-      time.sleep(delay)
-      print "%s: %s" % (threadName, time.ctime(time.time()))
-      counter -= 1
-
-# Create new threads
-thread1 = myThread(1, "VISUALIZATION", 1)
-thread2 = myThread(2, "MUSIC", 2)
-
-# Start new Threads
-thread1.start()
-thread2.start()
-
-print "Exiting Main Thread"

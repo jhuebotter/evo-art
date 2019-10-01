@@ -3,7 +3,6 @@ import math
 import time
 import pandas as pd
 from music import *
-from threading import Thread
 from genetics import *
 from psonic import *
 
@@ -32,7 +31,7 @@ pygame.init()
 pygame.display.set_caption("Evo Art")
 
 # Set the height and width of the screen
-size = [1920, 1080]
+size = [1080, 1080]
 center = [size[0] / 2, size[1] / 2]
 screen = pygame.display.set_mode(size)
 pos_line = [[center[0], 0], center]
@@ -49,6 +48,7 @@ FPS = 60
 
 def main():
 
+    print("Starting geometry main function.")
     clock = pygame.time.Clock()
 
     # ---  Hhere we init the genes -------------------- #
@@ -150,16 +150,9 @@ def rotatePoint(polarcorner, angle, center=center):
 def make_polygon(genes, t, delta_t):
     for i in range(genes['number']):
         factor = round(1. / math.cos(math.radians(180./genes['order'])), 3)
-        #print(factor)
-        #genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + (i * factor / 2.))
-        #genes['radius'] = round((genes['rootnote']) * (factor ** ((i + genes['rootoctave'] - 1))), 3)
-        #genes['radius'] = round((genes['rootnote'] + (12 * (genes['rootoctave'] - 1))) * ((factor**(i))), 3)
-        #genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
-        #genes['radius'] = 50 + 440 * 10 ** (math.log(2) * (genes['note'] / genes['rootoctave'] * factor))
 
         genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
         genes['radius'] = SCALING_FACTOR * 440 * 10 ** (math.log(2, 10) * (genes['note'] - 69) / 12)
-
 
         # get the rotation angles
         prev_angle = round((t-delta_t) * (360. / genes['order']) * (genes['bpm'] / 60.), 3)
@@ -185,5 +178,5 @@ def make_polygon(genes, t, delta_t):
 
     return
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
