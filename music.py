@@ -24,8 +24,7 @@ instruments = [synths, bass, low_percs, high_percs, synths, synths, high_percs, 
 
 
 def setup_listeners2(df, instr):
-    for instrument in instr:
-        print("setting up listener for")
+
 
 
 
