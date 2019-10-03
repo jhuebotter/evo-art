@@ -9,7 +9,7 @@ from psonic import *
 synths = ['pluck', 'mod_pulse', 'mod_sine', 'piano']
 #rsynths = ['pluck', 'pluck', 'pluck', 'pluck']
 #high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
-high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell']
+high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'tabla_tun1']
 #low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
 low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'tabla_re']
 #snares = ['tabla_na_s', 'elec_wood', 'drum_snare_soft']
@@ -35,7 +35,7 @@ def setup_listeners():
     print("setting up metronome TICK")
 
     run("""use_debug false
-            use_real_time
+        
             live_loop :metronome do
                 cue :tick
                 sleep 0.0625

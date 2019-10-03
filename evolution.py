@@ -32,7 +32,7 @@ toolbox.register("population", initPopulation, list, toolbox.individual, "genepo
 
 toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutPolynomialBounded, eta=.5, low=0., up=1., indpb=0.3)
+toolbox.register("mutate", tools.mutPolynomialBounded, eta=.5, low=0., up=1., indpb=0.6)
 #toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
 #toolbox.register("select", tools.selWorst)
 toolbox.register("select", tools.selNSGA2)
