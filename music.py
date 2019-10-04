@@ -166,7 +166,6 @@ def play_piano(genes):
 def play_synth(genes):
     #print()
     #print('Nature:   ', genes['nature'])
-    print('Instrument', instruments[genes['instrument']])
     #print('Low Perc: ', low_percs[genes['low_perc']])
     #print('High Perc: ', high_percs[genes['high_perc']])
     #print('Bass     : ', bass[genes['bass']])
