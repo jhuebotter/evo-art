@@ -41,10 +41,10 @@ def main():
 
     # now load in JSON configuration file
     with open(data_path + 'test_config.json') as f:
-        conf_file = json.load(f)
-        print(conf_file['mut_rate'])
+        config = json.load(f)
+        print(config['mut_rate'])
 
-    time.sleep(conf_file['gen_length'])
+    time.sleep(config['gen_length'])
 
     # Init population
     pop = toolbox.population()
@@ -59,7 +59,7 @@ def main():
     # CXPB  is the probability with which two individuals
     #       are crossed
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0., conf_file['mut_rate']
+    CXPB, MUTPB = 0., config['mut_rate']
 
     # Extracting all the fitnesses of
     fits = [ind.fitness.values[0] for ind in pop]
@@ -123,8 +123,8 @@ def main():
 
         # now load in JSON configuration file
         with open(data_path + 'test_config.json') as f:
-            conf_file = json.load(f)
-            time.sleep(conf_file['gen_length'])
+            config = json.load(f)
+            time.sleep(config['gen_length'])
 
     return
 

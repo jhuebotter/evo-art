@@ -22,27 +22,76 @@ BASS = [x for x in glob.glob('samples/BASS/*')]
 HIGH_PERC = [x for x in glob.glob('samples/HIGH_PERC/*')]
 LOW_PERC = [x for x in glob.glob('samples/LOW_PERC/*')]
 
-base_dir = "/Users/stefanwijtsma/evo-art/"
+base_dir = "/users/stefanwijtsma/evo-art/"
 
-print(LOW_PERC)
-print(HIGH_PERC)
 
 instruments = [synths, bass, low_percs, high_percs, synths, synths, high_percs, synths, bass, bass]
 
+def get_sample_name(path):
+    string = str(path)
+    elem = string.split('/')[-1]
+    sample_name = elem.replace('.wav', '')
+    return sample_name
+
+
+
 
 def setup_listeners2():
+    print("setting up metronome TICK")
+
+    run("""use_debug false
+            live_loop :metronome do
+                cue :tick
+                sleep 0.0625
+            end""")
+
+    for synth in synths:
+        print("setting up listener for", synth)
+        run(f"""in_thread do
+            live_loop :{synth}, sync: :tick do
+            n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
+            with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
+            synth :{synth}, note: n, cutoff: c, attack: a + 0.3, release: r, pan: p, mod_range: m2
+            end
+            end
+            end""")
 
     for bass in BASS:
-        print(bass.split('/')[-1])
-        sample_name = bass.split('/'[-1])
+        sample_name = get_sample_name(bass)
+        print(sample_name)
         print('Setting up listener for: ', bass)
         run(f"""in_thread do
-                    live_loop :{bass} do            
+                    live_loop :{sample_name}, sync: :tick do           
                     a, = sync "/osc/trigger/{sample_name}"
-                    sample "/Users/stefanwijtsma/evo-art/{bass}", amp: a
+                    sample '/users/stefanwijtsma/evo-art/{bass}', amp: a
                     end
                     end""")
 
+    for perc in HIGH_PERC:
+        sample_name = get_sample_name(perc)
+        print('Setting up listener for: ', perc)
+        print(sample_name)
+        run(f"""in_thread do
+            live_loop :{sample_name}, sync: :tick do           
+            a, m, m_echo = sync "/osc/trigger/{sample_name}"
+            with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
+            with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
+            sample '/users/stefanwijtsma/evo-art/{perc}', amp: a
+            end
+            end      
+            end
+            end""")
+
+    for perc in LOW_PERC:
+        sample = get_sample_name(perc)
+        print(sample)
+        print('Setting up listener for: ', sample)
+        run(f"""in_thread do
+            live_loop :{sample}, sync: :tick do              
+            a, = sync "/osc/trigger/{sample}"
+            sample '/users/stefanwijtsma/evo-art/{perc}', amp: a     
+            end
+            end""")
 
 #setup_listeners2()
 
@@ -128,13 +177,13 @@ def play_synth(genes):
     #print('Radius:', genes['radius'])
     if genes['nature'] == 0:
         print('Bass playing:  ', BASS[genes['instrument']])
-        send_message(f"/trigger/{BASS[genes['instrument']]}", genes['amp'], genes['pitch'])
+        send_message(f"/trigger/{get_sample_name(BASS[genes['instrument']])}BASS_1", genes['amp'])
     elif genes['nature'] == 1:
-        print('Low Perc: ', low_percs[genes['instrument']])
-        send_message(f"/trigger/{low_percs[genes['instrument']]}", genes['amp'])
+        print('Low Perc: ', LOW_PERC[genes['instrument']])
+        send_message(f"/trigger/{get_sample_name(LOW_PERC[genes['instrument']])}", genes['amp'])
     elif genes['nature'] == 2:
-        print(high_percs[genes['instrument']])
-        send_message(f"/trigger/{high_percs[genes['instrument']]}", genes['amp'], genes['mix_reverb'], genes['mix_echo'])
+        print(HIGH_PERC[genes['instrument']])
+        send_message(f"/trigger/{get_sample_name(HIGH_PERC[genes['instrument']])}", genes['amp'], genes['mix_reverb'], genes['mix_echo'])
     elif genes['nature'] >= 3:
         print('Synth: ', synths[genes['instrument']])
         send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['release'],
