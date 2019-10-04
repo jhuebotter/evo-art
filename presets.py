@@ -2,14 +2,24 @@ from genetics import *
 import json
 import os
 
-presets_path = 'data/presets/'
-default_config_path = 'data/presets/default/config.json'
+PRESETS_PATH = 'data/presets/'
+MASTER_CONFIG_PATH = 'data/master_config.json'
+DEFAULT_CONFIG_PATH = 'data/presets/default/config.json'
 
+'''
 # for inputting a preset name to load an existing preset as the base
-'''
 preset_name = ''
-config_path = presets_path + preset_name + '/' + 'config.json'
+config_path = PRESETS_PATH + preset_name + '/' + 'config.json'
+
+# example to create a copy of default
+preset_path = PRESETS_PATH + 'new/'
+create_preset(preset_path, config_path)
+
+# example to create a copy of a config located at config_path
+preset_path = PRESETS_PATH + 'new/'
+create_preset(preset_path, config_path)
 '''
+
 
 def create_folder(directory):
     try:
@@ -18,7 +28,8 @@ def create_folder(directory):
     except OSError:
         print ('Error: Creating directory. ' + directory)
 
-def create_preset(preset_path, config_path = default_config_path):
+def create_preset(preset_name, config_path = DEFAULT_CONFIG_PATH):
+    preset_path = 'data/presets/' + preset_name + '/'
     config = load_config(config_path)
     create_data_structure(preset_path, config)
     save_config(preset_path, config)
@@ -44,14 +55,7 @@ def create_initial_genes(preset_path, config, nature):
     df.to_csv(preset_path + nature + '.csv')
 
 
-# example to create a copy of default
-'''
-preset_path = presets_path + 'new/'
-create_preset(preset_path, config_path)
-'''
-
-# example to create a copy of a config located at config_path
-'''
-preset_path = presets_path + 'new/'
-create_preset(preset_path, config_path)
-'''
+# these lines could also be in the main file
+master_config = load_config(MASTER_CONFIG_PATH)
+current_config_path = master_config['preset_path']
+create_preset('default3') # test line
