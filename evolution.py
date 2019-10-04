@@ -138,8 +138,7 @@ def main():
 
 
         # now load in JSON configuration file
-        with open(data_path + 'config.json') as f:
-            config = json.load(f)
+        config = load_config(config_path)
         time.sleep(config['gen_length'])
 
     return

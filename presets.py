@@ -20,6 +20,9 @@ preset_path = PRESETS_PATH + 'new/'
 create_preset(preset_path, config_path)
 '''
 
+def read_preset_path(master_config_path='data/presets/master_config.json'):
+    master_config = load_config(master_config_path)
+    return master_config['']
 
 def create_folder(directory):
     try:
