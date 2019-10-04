@@ -34,6 +34,8 @@ def get_sample_name(path):
     return sample_name
 
 
+
+
 def setup_listeners2():
     print("setting up metronome TICK")
 
@@ -53,8 +55,6 @@ def setup_listeners2():
             end
             end
             end""")
-    print("setting up metronome TICK")
-
 
     for bass in BASS:
         sample_name = get_sample_name(bass)
@@ -94,6 +94,8 @@ def setup_listeners2():
             sample '{base_dir}{perc}', amp: a, pre_amp: 0.5     
             end
             end""")
+
+
 
 
 
@@ -153,7 +155,6 @@ def setup_listeners():
             a, = sync "/osc/trigger/{snare}"
             sample :{snare}, amp: a        
             end""")
-
 
 
 def play_synth(genes):

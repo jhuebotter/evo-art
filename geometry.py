@@ -8,7 +8,7 @@ from psonic import *
 import json
 
 # Set the height and width of the screen
-size = [1080, 1080]
+size = [1400, 700]
 center = [size[0] / 2, size[1] / 2]
 pos_line = [[center[0], 0], center]
 
@@ -38,7 +38,7 @@ def main():
     # ---  Here we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(10, genes)
+    df = make_genepool(6, genes)
     #print(df.head())
     df.to_csv('genepool.csv')
 

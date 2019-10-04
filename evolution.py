@@ -3,6 +3,7 @@ from genetics import *
 import pandas as pd
 import time
 import json
+from presets import *
 
 MASTER_CONFIG_PATH = 'data/presets/master_config.json' # probably just pull this from the main file
 
@@ -52,9 +53,11 @@ toolbox.register("select", tools.selNSGA2)
 def main():
 
     # now load in JSON configuration file
-    with open(data_path + 'config.json') as f:
-        config = json.load(f)
-        print(config['mut_rate'])
+    #with open(data_path + 'test_config.json') as f:
+    #    config = json.load(f)
+    #    print(config['mut_rate'])
+
+    config = load_config(config_path)
 
     time.sleep(config['gen_length'])
 
