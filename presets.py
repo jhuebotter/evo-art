@@ -3,7 +3,7 @@ import json
 import os
 
 PRESETS_PATH = 'data/presets/'
-MASTER_CONFIG_PATH = 'data/presets/master_config.json'
+MASTER_CONFIG_PATH = 'data/master_config.json'
 DEFAULT_CONFIG_PATH = 'data/presets/default/config.json'
 
 '''
@@ -28,7 +28,8 @@ def create_folder(directory):
     except OSError:
         print ('Error: Creating directory. ' + directory)
 
-def create_preset(preset_path, config_path = DEFAULT_CONFIG_PATH):
+def create_preset(preset_name, config_path = DEFAULT_CONFIG_PATH):
+    preset_path = 'data/presets/' + preset_name + '/'
     config = load_config(config_path)
     create_data_structure(preset_path, config)
     save_config(preset_path, config)
@@ -57,3 +58,4 @@ def create_initial_genes(preset_path, config, nature):
 # these lines could also be in the main file
 master_config = load_config(MASTER_CONFIG_PATH)
 current_config_path = master_config['preset_path']
+create_preset('default3') # test line
