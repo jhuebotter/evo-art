@@ -60,8 +60,8 @@ def make_phenotype(genes):
                  order=int(genes['order'] * 9 + 3),
                  number=int(genes['number'] * 4 + 1),
                  bpm=int(15*2**int(genes['bpm']*3)),
-                 total_offset=(1/4) * int(genes['total_offset'] * 4) * 0.5**int(genes['bpm']*3),
-                 initial_offset=(1/4) * int(genes['initial_offset'] * 4) * 0.5**int(genes['bpm']*3),
+                 total_offset=(1/8) * int(genes['total_offset'] * 8) * 0.5**int(genes['bpm']*3),
+                 initial_offset=(1/8) * int(genes['initial_offset'] * 8) * 0.5**int(genes['bpm']*3),
                  red=int(genes['red'] * 155 + 100), green=int(genes['green'] * 155 + 100),
                  blue=int(genes['blue'] * 155 + 100),
                  nature=int(genes['nature']*4),
@@ -76,7 +76,7 @@ def make_phenotype(genes):
                  mod_phase=round(genes['mod_phase'] * .7 + .1, 2),
                  #effect stuff
                  mix_reverb=round(genes['mix_reverb'] * .7 + .3, 2),
-                 mix_echo=round(genes['mix_echo'] * .7, 2),
+                 mix_echo=round(genes['mix_echo'] * .6 + .2, 2),
                  # Now the sample related stuff
                  pitch=int(genes['pitch'] * 24 - 12)
                  )
