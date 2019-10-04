@@ -5,7 +5,7 @@ import pandas as pd
 from music import *
 from genetics import *
 from psonic import *
-
+import json
 
 # Set the height and width of the screen
 size = [1080, 1080]
@@ -77,7 +77,7 @@ def main():
         try:
             df = pd.read_csv('genepool.csv', index_col=0)
         except:
-            print('error')
+            print('error loading genepool')
         genepool = df.to_dict(orient='records')
 
         # All drawing code happens after the for loop and but
