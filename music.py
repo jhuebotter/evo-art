@@ -1,4 +1,5 @@
 from psonic import *
+import glob as glob
 
 #synths = ['piano', 'saw', 'dull_bell', 'pretty_bell', 'beep', 'saw', 'pulse', 'dark_waves', 'supersaw', 'subpulse']
 #synths = ['piano', 'mod_daw', 'bass']
@@ -17,15 +18,33 @@ snares = ['drum_snare_soft']
 bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
+BASS = [x for x in glob.glob('samples/BASS/*')]
+HIGH_PERC = [x for x in glob.glob('samples/HIGH_PERC/*')]
+LOW_PERC = [x for x in glob.glob('samples/LOW_PERC/*')]
 
+base_dir = "/Users/stefanwijtsma/evo-art/"
 
+print(LOW_PERC)
+print(HIGH_PERC)
 
 instruments = [synths, bass, low_percs, high_percs, synths, synths, high_percs, synths, bass, bass]
 
 
-def setup_listeners2(df, instr):
+def setup_listeners2():
+
+    for bass in BASS:
+        print(bass.split('/')[-1])
+        sample_name = bass.split('/'[-1])
+        print('Setting up listener for: ', bass)
+        run(f"""in_thread do
+                    live_loop :{bass} do            
+                    a, = sync "/osc/trigger/{sample_name}"
+                    sample "/Users/stefanwijtsma/evo-art/{bass}", amp: a
+                    end
+                    end""")
 
 
+#setup_listeners2()
 
 
 
@@ -108,8 +127,8 @@ def play_synth(genes):
     print('Note:  ', genes['note'])
     #print('Radius:', genes['radius'])
     if genes['nature'] == 0:
-        print('Bass playing:  ', bass[genes['instrument']])
-        send_message(f"/trigger/{bass[genes['instrument']]}", genes['amp'], genes['pitch'])
+        print('Bass playing:  ', BASS[genes['instrument']])
+        send_message(f"/trigger/{BASS[genes['instrument']]}", genes['amp'], genes['pitch'])
     elif genes['nature'] == 1:
         print('Low Perc: ', low_percs[genes['instrument']])
         send_message(f"/trigger/{low_percs[genes['instrument']]}", genes['amp'])
