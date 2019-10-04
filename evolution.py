@@ -2,7 +2,9 @@ from deap import base, creator, tools
 from genetics import *
 import pandas as pd
 import time
+import json
 
+data_path = 'data/'
 
 def evalOneMax(individual):
 
@@ -37,16 +39,25 @@ toolbox.register("population", initPopulation, list, toolbox.individual, "genepo
 
 toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutPolynomialBounded, eta=1., low=0., up=1., indpb=0.2)
+toolbox.register("mutate", tools.mutPolynomialBounded, eta=.5, low=0., up=1., indpb=0.6)
 #toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
+#toolbox.register("select", tools.selWorst)
 toolbox.register("select", tools.selNSGA2)
 
 
 def main():
 
-    time.sleep(1)
+    # now load in JSON configuration file
+    with open(data_path + 'test_config.json') as f:
+        config = json.load(f)
+        print(config['mut_rate'])
 
+    time.sleep(config['gen_length'])
+
+    # Init population
     pop = toolbox.population()
+
+
 
     # Evaluate the entire population
     fitnesses = list(map(toolbox.evaluate, pop))
@@ -56,7 +67,7 @@ def main():
     # CXPB  is the probability with which two individuals
     #       are crossed
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0., 0.5
+    CXPB, MUTPB = 0., config['mut_rate']
 
     # Extracting all the fitnesses of
     fits = [ind.fitness.values[0] for ind in pop]
@@ -77,7 +88,7 @@ def main():
         print("-- Generation %i --" % g)
 
         # Select the next generation individuals
-        offspring = toolbox.select(pop, len(pop)) #, len(pop))
+        offspring = toolbox.select(pop, len(pop))#, len(pop))
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
 
@@ -100,8 +111,7 @@ def main():
         for ind, fit in zip(offspring, fitnesses):
             ind.fitness.values = fit
 
-        #pop[:] = offspring
-        pop = offspring
+        pop[:] = offspring
 
         pop_genes = pd.DataFrame(pop, columns=load_genepool().columns)
         pop_genes.to_csv('genepool.csv')
@@ -119,6 +129,14 @@ def main():
         #print("  Avg %s" % mean)
         #print("  Std %s" % std)
 
-        time.sleep(1)
+
+        # now load in JSON configuration file
+        with open(data_path + 'test_config.json') as f:
+            config = json.load(f)
+        time.sleep(config['gen_length'])
 
     return
+
+
+if __name__ == '__main__':
+    main()

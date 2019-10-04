@@ -49,7 +49,7 @@ def main():
     #genepool = df.to_dict(orient='records')  # [genes1]
 
     #setup_listeners2(df, df['instrument'].values)
-    setup_listeners()
+    setup_listeners2()
 
     # get some time info
     start = time.time()
