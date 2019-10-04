@@ -22,8 +22,6 @@ BASS = [x for x in glob.glob('samples/BASS/*')]
 HIGH_PERC = [x for x in glob.glob('samples/HIGH_PERC/*')]
 LOW_PERC = [x for x in glob.glob('samples/LOW_PERC/*')]
 
-base_dir = "/users/stefanwijtsma/evo-art/"
-
 
 instruments = [synths, bass, low_percs, high_percs, synths, synths, high_percs, synths, bass, bass]
 
