@@ -33,7 +33,7 @@ if __name__ == '__main__':
     evo_thread.start()
     config_thread.start()
 
-    while geo_thread.is_alive() and config_thread.is_alive():
+    while geo_thread.is_alive() and config_thread.is_alive() and evo_thread.is_alive():
        time.sleep(1)
 
     geo_thread.terminate()

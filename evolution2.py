@@ -45,10 +45,10 @@ def main():
 
     # now load in JSON configuration file
     with open(data_path + 'master_config.json') as f:
-        conf_file = json.load(f)
-        print(conf_file['mut_rate'])
+        config = json.load(f)
+        print(config['mut_rate'])
 
-    time.sleep(conf_file['gen_length'])
+    time.sleep(config['gen_length'])
 
     # Init populations
     pops = []

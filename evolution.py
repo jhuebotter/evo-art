@@ -4,7 +4,10 @@ import pandas as pd
 import time
 import json
 
-data_path = 'data/'
+preset_name = 'default'
+preset_path = 'data/presets/' + preset_name
+config_path = preset_path + '/' + 'config.json'
+
 
 def evalOneMax(individual):
 
@@ -48,7 +51,7 @@ toolbox.register("select", tools.selNSGA2)
 def main():
 
     # now load in JSON configuration file
-    with open(data_path + 'test_config.json') as f:
+    with open(data_path + 'config.json') as f:
         config = json.load(f)
         print(config['mut_rate'])
 
@@ -131,7 +134,7 @@ def main():
 
 
         # now load in JSON configuration file
-        with open(data_path + 'test_config.json') as f:
+        with open(data_path + 'config.json') as f:
             config = json.load(f)
         time.sleep(config['gen_length'])
 
