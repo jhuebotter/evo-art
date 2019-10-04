@@ -38,13 +38,18 @@ toolbox.register("mutate", tools.mutPolynomialBounded, eta=.5, low=0., up=1., in
 toolbox.register("select", tools.selNSGA2)
 
 def main():
-    # Init population
-    pop = toolbox.population()
 
     # now load in JSON configuration file
     with open(data_path + 'test_config.json') as f:
         conf_file = json.load(f)
         print(conf_file['mut_rate'])
+
+    time.sleep(conf_file['gen_length'])
+
+    # Init population
+    pop = toolbox.population()
+
+
 
     # Evaluate the entire population
     fitnesses = list(map(toolbox.evaluate, pop))
