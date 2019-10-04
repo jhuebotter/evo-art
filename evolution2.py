@@ -8,7 +8,7 @@ import json
 import glob as glob
 
 preset_name = 'default'
-preset_path = 'data/presets/' + preset_name
+preset_path = 'data/presets/' + preset_name + '/'
 config_path = preset_path + '/' + 'config.json'
 
 def evalOneMax(individual):
@@ -44,7 +44,7 @@ toolbox.register("select", tools.selNSGA2)
 def main():
 
     # now load in JSON configuration file
-    with open(data_path + 'master_config.json') as f:
+    with open(config_path) as f:
         conf_file = json.load(f)
         print(conf_file['mut_rate'])
 
@@ -52,7 +52,7 @@ def main():
 
     # Init populations
     pops = []
-    for csv in glob.glob('*.csv'):
+    for csv in glob.glob(preset_path + '/initial/' '*.csv'):
         pops.append(csv)
 
     print(pops)
