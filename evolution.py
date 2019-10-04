@@ -4,10 +4,11 @@ import pandas as pd
 import time
 import json
 
-preset_name = 'default'
-preset_path = 'data/presets/' + preset_name
-config_path = preset_path + '/' + 'config.json'
+MASTER_CONFIG_PATH = 'data/presets/master_config.json' # probably just pull this from the main file
 
+preset_name = 'default'
+preset_path = 'data/presets/' + preset_name + '/'
+config_path = preset_path + '/' + 'config.json'
 
 def evalOneMax(individual):
 
