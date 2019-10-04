@@ -51,7 +51,7 @@ def setup_listeners2():
             live_loop :{synth}, sync: :tick do
             n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
             with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
-            synth :{synth}, note: n, cutoff: c, attack: a + 0.3, release: r, pan: p, mod_range: m2
+            synth :{synth}, note: n, cutoff: c, attack: a, release: r, pan: p, mod_range: m2
             end
             end
             end""")
@@ -63,7 +63,7 @@ def setup_listeners2():
         run(f"""in_thread do
                     live_loop :{sample_name}, sync: :tick do           
                     a, = sync "/osc/trigger/{sample_name}"
-                    sample '/users/stefanwijtsma/evo-art/{bass}', amp: a
+                    sample '/users/stefanwijtsma/evo-art/{bass}', amp: a, pre_amp: 0.6
                     end
                     end""")
 
@@ -76,7 +76,7 @@ def setup_listeners2():
             a, m, m_echo = sync "/osc/trigger/{sample_name}"
             with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
             with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
-            sample '/users/stefanwijtsma/evo-art/{perc}', amp: a
+            sample '/users/stefanwijtsma/evo-art/{perc}', amp: a, pre_amp: 0.8
             end
             end      
             end
@@ -89,7 +89,7 @@ def setup_listeners2():
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do              
             a, = sync "/osc/trigger/{sample}"
-            sample '/users/stefanwijtsma/evo-art/{perc}', amp: a     
+            sample '/users/stefanwijtsma/evo-art/{perc}', amp: a, pre_amp: 0.5     
             end
             end""")
 
@@ -177,7 +177,7 @@ def play_synth(genes):
     #print('Radius:', genes['radius'])
     if genes['nature'] == 0:
         print('Bass playing:  ', BASS[genes['instrument']])
-        send_message(f"/trigger/{get_sample_name(BASS[genes['instrument']])}BASS_1", genes['amp'])
+        send_message(f"/trigger/{get_sample_name(BASS[genes['instrument']])}", genes['amp'])
     elif genes['nature'] == 1:
         print('Low Perc: ', LOW_PERC[genes['instrument']])
         send_message(f"/trigger/{get_sample_name(LOW_PERC[genes['instrument']])}", genes['amp'])
