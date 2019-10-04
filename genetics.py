@@ -87,8 +87,9 @@ def make_genepool(size=3, crispr=[dict()]):
 
     for i in range(size):
         gen = random_genome()
-        for k, v in crispr[i].items():
-            gen[k] = v
+
+        #for k, v in crispr[i].items():
+        #    gen[k] = v
         genepool.append(gen)
 
     df = pd.DataFrame(genepool)

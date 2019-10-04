@@ -39,10 +39,13 @@ toolbox.register("evaluate", evalOneMax)
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutPolynomialBounded, eta=1., low=0., up=1., indpb=0.2)
 #toolbox.register("mutate", tools.mutGaussian, mu=0.5, sigma=0.1, indpb=0.05)
-toolbox.register("select", tools.selRandom)
+toolbox.register("select", tools.selNSGA2)
 
 
 def main():
+
+    time.sleep(1)
+
     pop = toolbox.population()
 
     # Evaluate the entire population

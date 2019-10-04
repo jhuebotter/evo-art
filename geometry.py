@@ -35,10 +35,10 @@ def main():
     print("Starting geometry main function.")
     clock = pygame.time.Clock()
 
-    # ---  Hhere we init the genes -------------------- #
+    # ---  Here we init the genes -------------------- #
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(3, genes)
+    df = make_genepool(10, genes)
     #print(df.head())
     df.to_csv('genepool.csv')
 
