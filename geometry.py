@@ -18,7 +18,7 @@ BLUE = (100, 100, 200)
 GREEN = (100, 200, 100)
 RED = (200, 100, 100)
 
-# instuments
+# instruments
 synths = ['beep', 'dull_bell', 'mod_pulse', 'mod_sine', 'sine']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
 low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']

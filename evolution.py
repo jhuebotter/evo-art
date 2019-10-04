@@ -40,16 +40,17 @@ toolbox.register("select", tools.selNSGA2)
 def main():
 
     # now load in JSON configuration file
-    with open(data_path + 'test_config.json') as f:
+    with open(data_path + 'master_config.json') as f:
         conf_file = json.load(f)
         print(conf_file['mut_rate'])
 
     time.sleep(conf_file['gen_length'])
 
     # Init population
+    pops = []
+    for nature in natures:
+
     pop = toolbox.population()
-
-
 
     # Evaluate the entire population
     fitnesses = list(map(toolbox.evaluate, pop))
@@ -122,7 +123,7 @@ def main():
 
 
         # now load in JSON configuration file
-        with open(data_path + 'test_config.json') as f:
+        with open(data_path + 'master_config.json') as f:
             conf_file = json.load(f)
             time.sleep(conf_file['gen_length'])
 
