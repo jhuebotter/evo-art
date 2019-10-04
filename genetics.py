@@ -25,7 +25,9 @@ instruments = [synths, low_percs, snares, high_percs, synths, synths, high_percs
 
 
 def random_genome():
+
     # creates a semi random genome
+
     genes = dict(rootnote=random.random(),
                  rootoctave=random.random(),
                  order=random.random(),
@@ -53,8 +55,11 @@ def random_genome():
 
     return genes
 
+
 def make_phenotype(genes):
+
     # creates a semi random genome
+
     phenotype = dict(rootnote=int(genes['rootnote'] * 12 + 24),
                  rootoctave=int(genes['rootoctave'] * 3 + 3),
                  order=int(genes['order'] * 9 + 3),
@@ -85,14 +90,18 @@ def make_phenotype(genes):
 
 
 def add_genes(df, genes):
+
     # adds any genes to a geneome
+
     df.append(genes, ignore_index=True)
 
     return df
 
 
 def make_genepool(size=3, crispr=[dict()]):
+
     # create a genepool consisting of a number of random genomes
+
     genepool = []
 
     for i in range(size):
@@ -102,25 +111,43 @@ def make_genepool(size=3, crispr=[dict()]):
         genepool.append(gen)
 
     df = pd.DataFrame(genepool)
+
     return df
 
 
+def make_genepool2(size=20):
+
+    genepool = []
+    for i in range(size):
+
+        gen = random_genome()
+        genepool.append(gen)
+
+    return pd.DataFrame(genepool)
+
+
 def load_genepool(filename='genepool.csv'):
+
     # loads a genepool from a given file
+
     df = pd.read_csv(filename, index_col=0)
 
     return df
 
 
 def save_genepool(df, filename='genepool.csv'):
+
     # saves a genepool to a given file
+
     df.to_csv(filename)
 
     return
 
 
 def set_colors(genes, rgb=[0.8, 0.5, 0.2], random_colors=True):
+
     # change a genes color values
+
     if random_colors:
         genes['red'] = random_color()
         genes['green'] = random_color()
@@ -133,10 +160,7 @@ def set_colors(genes, rgb=[0.8, 0.5, 0.2], random_colors=True):
 
 
 def random_color():
+
     # get a random color value
+
     return 100 + int(random.uniform(0, 155))
-
-gen = random_genome()
-
-phen = make_phenotype(gen)
-print(phen)

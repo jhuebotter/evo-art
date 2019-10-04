@@ -1,26 +1,37 @@
-from deap import base
-from deap import creator
-from deap import tools
+from deap import base, creator, tools
 from genetics import *
 import pandas as pd
 import time
 import json
+from presets import *
 
 data_path = 'data/'
+preset_name = 'default'
+preset_path = 'data/presets/' + preset_name
+config_path = preset_path + '/' + 'config.json'
 
 def evalOneMax(individual):
+
+    # This is the fitness function
+
     x = sum(individual)
+
     return x,
 
 def initIndividual(icls, content):
+
+    # How to make an individual
+
     return icls(content)
 
 def initPopulation(pcls, ind_init, filename):
-    contents = []
+
+    # How to make a population
+
     df = load_genepool(filename)
-    for genom in df.values:
-        contents.append(list(genom))
-    return pcls(ind_init(c) for c in contents)
+
+    return pcls(ind_init(c) for c in df.values)
+
 
 creator.create("FitnessMax", base.Fitness, weights=(0.00,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -37,12 +48,15 @@ toolbox.register("mutate", tools.mutPolynomialBounded, eta=.5, low=0., up=1., in
 #toolbox.register("select", tools.selWorst)
 toolbox.register("select", tools.selNSGA2)
 
+
 def main():
 
     # now load in JSON configuration file
-    with open(data_path + 'test_config.json') as f:
-        config = json.load(f)
-        print(config['mut_rate'])
+    #with open(data_path + 'test_config.json') as f:
+    #    config = json.load(f)
+    #    print(config['mut_rate'])
+
+    config = load_config(config_path)
 
     time.sleep(config['gen_length'])
 
@@ -107,6 +121,7 @@ def main():
 
         pop_genes = pd.DataFrame(pop, columns=load_genepool().columns)
         pop_genes.to_csv('genepool.csv')
+
         # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
 
@@ -124,7 +139,7 @@ def main():
         # now load in JSON configuration file
         with open(data_path + 'test_config.json') as f:
             config = json.load(f)
-            time.sleep(config['gen_length'])
+        time.sleep(config['gen_length'])
 
     return
 
