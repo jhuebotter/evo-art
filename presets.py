@@ -40,7 +40,7 @@ def create_data_structure(preset_path, config):
     create_folder(preset_path + 'current')
 
 def create_initial_genes(preset_path, config, nature):
-    df = make_genepool2(config['size'])   # pull size from config here if needed
+    df = make_genepool(config['size'])   # pull size from config here if needed
     df.to_csv(preset_path + nature + '.csv')
 
 
