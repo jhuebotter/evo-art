@@ -39,32 +39,32 @@ def setup_listeners2():
     #print("setting up metronome TICK")
 
     run("""use_debug false
-            live_loop :metronome do
-                cue :tick
-                sleep 0.0625
-            end""")
+live_loop :metronome do
+  cue :tick
+  sleep 0.0625
+end""")
 
     for synth in synths:
         #print("setting up listener for", synth)
         run(f"""in_thread do
-            live_loop :{synth}, sync: :tick do
-            n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
-            with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
-            synth :{synth}, note: n, cutoff: c, attack: a, release: r, pan: p, mod_range: m2
-            end
-            end
-            end""")
+  live_loop :{synth}, sync: :tick do
+    n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
+    with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
+      synth :{synth}, note: n, cutoff: c, attack: a, release: r, pan: p, mod_range: m2
+    end
+  end
+end""")
 
     for bass in BASS:
         sample_name = get_sample_name(bass)
         #print(sample_name)
         #print('Setting up listener for: ', bass)
         run(f"""in_thread do
-                    live_loop :{sample_name}, sync: :tick do           
-                    a, = sync "/osc/trigger/{sample_name}"
-                    sample '{base_dir}{bass}', amp: a, , pre_amp: 0.6
-                    end
-                    end""")
+  live_loop :{sample_name}, sync: :tick do
+    a, p = sync "/osc/trigger/{sample_name}"
+    sample '{base_dir}{bass}', amp: a, pre_amp: 0.6, pitch: p
+  end
+end""")
 
 
     for perc in HIGH_PERC:
@@ -72,15 +72,15 @@ def setup_listeners2():
         #print('Setting up listener for: ', perc)
         #print(sample_name)
         run(f"""in_thread do
-            live_loop :{sample_name}, sync: :tick do           
-            a, m, m_echo = sync "/osc/trigger/{sample_name}"
-            with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
-            with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
-            sample '{base_dir}{perc}', amp: a
-            end
-            end      
-            end
-            end""")
+  live_loop :{sample_name}, sync: :tick do
+    a, m, m_echo, p = sync "/osc/trigger/{sample_name}"
+    with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
+      with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
+        sample '{base_dir}{perc}', amp: a, pitch: p
+      end
+    end
+  end
+end""")
 
 
     for perc in LOW_PERC:
@@ -88,11 +88,11 @@ def setup_listeners2():
         #print(sample)
         #print('Setting up listener for: ', sample)
         run(f"""in_thread do
-            live_loop :{sample}, sync: :tick do              
-            a, = sync "/osc/trigger/{sample}"
-            sample '{base_dir}{perc}', amp: a, pre_amp: 0.5     
-            end
-            end""")
+  live_loop :{sample}, sync: :tick do
+    a, p = sync "/osc/trigger/{sample}"
+    sample '{base_dir}{perc}', amp: a, pre_amp: 0.5, pitch: p
+  end
+end""")
 
 
 
@@ -131,15 +131,16 @@ def setup_listeners():
     for sample in high_percs:
         #print('Setting up listener for: ', sample)
         run(f"""in_thread do
-            live_loop :{sample}, sync: :tick do           
-            a, m, m_echo = sync "/osc/trigger/{sample}"
-            with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
-            with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
-            sample :{sample}, amp: a, pre_amp: 0.5
-            end
-            end      
-            end
+                live_loop :{sample}, sync: :tick do           
+                    a, m, m_echo = sync '/osc/trigger/{sample}'
+                    with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
+                        with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
+                            sample :{sample}, amp: a, pre_amp: 0.5
+                        end
+                    end      
+                end
             end""")
+
     for sample in bass:
         #print('Setting up listener for: ', sample)
         run(f"""in_thread do
@@ -160,19 +161,18 @@ def play_synth(genes):
 
     # Play snyths
 
-    if genes['nature'] == 0:
+    if genes['nature'] == 'bass':
         #print('Bass playing:  ', BASS[genes['instrument']])
-        send_message(f"/trigger/{get_sample_name(BASS[genes['instrument']])}", genes['amp'])
-    elif genes['nature'] == 1:
+        send_message(f"/trigger/{get_sample_name(BASS[genes['instrument']])}", genes['amp'], genes['pitch'])
+    elif genes['nature'] == 'low_perc':
         #print('Low Perc: ', LOW_PERC[genes['instrument']])
-        send_message(f"/trigger/{get_sample_name(LOW_PERC[genes['instrument']])}", genes['amp'])
-    elif genes['nature'] == 2:
+        send_message(f"/trigger/{get_sample_name(LOW_PERC[genes['instrument']])}", genes['amp'], genes['pitch'])
+    elif genes['nature'] == 'high_perc':
         #print(HIGH_PERC[genes['instrument']])
-        send_message(f"/trigger/{get_sample_name(HIGH_PERC[genes['instrument']])}", genes['amp'], genes['mix_reverb'], genes['mix_echo'])
-    elif genes['nature'] >= 3:
+        send_message(f"/trigger/{get_sample_name(HIGH_PERC[genes['instrument']])}", genes['amp'], genes['mix_reverb'], genes['mix_echo'], genes['pitch'])
+    elif genes['nature'] == 'synths':
         #print('Synth: ', synths[genes['instrument']])
-        send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['release'],
-                     genes['attack'], genes['mix_reverb'], genes['mod_range'])
+        send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['release'], genes['attack'], genes['mix_reverb'], genes['mod_range'])
 
     return
 
@@ -181,7 +181,8 @@ def stop_all_listeners():
 
     # Stop running processes in Sonic Pi
 
-    run("/stop-all-jobs")
+    #run("/stop-all-jobs")
+    stop()
 
 
 

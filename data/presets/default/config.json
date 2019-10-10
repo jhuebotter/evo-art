@@ -4,5 +4,6 @@
     "bpm_base" : 10,
     "genre" : "test",
     "natures" : ["bass","synths","low_perc","high_perc"],
-    "size" : 20
+    "size" : 20,
+    "refresh_rate": 1
 }

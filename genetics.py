@@ -59,13 +59,13 @@ def make_phenotype(genes, preset_config={}):
     phenotype = dict(rootnote=int(genes['rootnote'] * 12 + 24),
                  rootoctave=int(genes['rootoctave'] * 3 + 3),
                  order=int(genes['order'] * 9 + 3),
-                 number=int(genes['number'] * 3 + 2),
+                 number=int(genes['number'] * 3 + 3),
                  bpm=int(15*2**int(genes['bpm']*3)),
                  total_offset=(1/8) * int(genes['total_offset'] * 8) * 0.5**int(genes['bpm']*3),
                  initial_offset=(1/8) * int(genes['initial_offset'] * 8) * 0.5**int(genes['bpm']*3),
                  red=int(genes['red'] * 155 + 100), green=int(genes['green'] * 155 + 100),
                  blue=int(genes['blue'] * 155 + 100),
-                 nature=int(genes['nature']*4),
+                 nature=genes['nature'],#nature=int(genes['nature']*4),
                  instrument=int(genes['instrument']*4),
                  # this is all relevant for a synth
                  amp=round(genes['amp'] / 3 + 0.5, 2),
@@ -77,9 +77,10 @@ def make_phenotype(genes, preset_config={}):
                  mod_phase=round(genes['mod_phase'] * .7 + .1, 2),
                  #effect stuff
                  mix_reverb=round(genes['mix_reverb'] * .7 + .3, 2),
-                 mix_echo=round(genes['mix_echo'] * .6 + .2, 2),
+                 mix_echo=round(genes['mix_echo'] * .6 + .2, 2)
                  # Now the sample related stuff
-                 pitch=int(genes['pitch'] * 24 - 12)
+                 #pitch_change=int(genes['pitch'] * 24 - 12)
+                 #pitch=int(genes['note'])
                  )
 
     return phenotype

@@ -5,10 +5,12 @@ import pandas as pd
 from music import *
 from genetics import *
 from psonic import *
+from presets import *
+from autopilot import *
 import json
 
 # Set the height and width of the screen
-size = [1080, 1080]
+size = [1400, 700]
 center = [size[0] / 2, size[1] / 2]
 pos_line = [[center[0], 0], center]
 
@@ -36,17 +38,25 @@ def main():
     clock = pygame.time.Clock()
 
     # ---  Here we init the genes -------------------- #
+    '''
     #for i in range(len(instruments)):
     genes = [dict(instrument=x) for x in range(len(instruments))]
-    df = make_genepool(6, genes)
+    df = make_genepool(1, genes)
     #print(df.head())
     df.to_csv('genepool.csv')
 
     #genepool = df.to_dict(orient='records')
 
     # to load the genepool
-    df = pd.read_csv('genepool.csv', index_col=0)
+    #df = pd.read_csv('genepool.csv', index_col=0)
     #genepool = df.to_dict(orient='records')  # [genes1]
+    '''
+    # make sure we have our config files
+    preset_path = read_preset_path()
+    preset_config = load_config(preset_path)
+
+    # set csv of currently playing instrument
+    playing = preset_path + 'current/playing.csv'
 
     #setup_listeners2(df, df['instrument'].values)
     setup_listeners2()
@@ -61,7 +71,7 @@ def main():
 
         # This limits the while loop to a max of 10 times per second.
         # Leave this out and we will use all CPU we can.
-        clock.tick(FPS)
+        #clock.tick(FPS)
 
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start
@@ -75,9 +85,9 @@ def main():
                 done = True  # Flag that we are done so we exit this loop
 
         try:
-            df = pd.read_csv('genepool.csv', index_col=0)
+            df = pd.read_csv(playing, index_col=0)
         except:
-            #print('error loading genepool')
+            print('error loading genepool')
             pass
 
         genepool = df.to_dict(orient='records')
@@ -87,6 +97,7 @@ def main():
         # Clear the screen and set the screen background
         screen.fill(BLACK)
         pygame.draw.polygon(screen, WHITE, pos_line, 1)
+
         # This is where the magic happens
         for genes in genepool:
             phenotype = make_phenotype(genes)
@@ -99,6 +110,7 @@ def main():
     pygame.quit()
 
     stop_all_listeners()
+
     #run("""use_osc "localhost", 5000
     #        osc '/stop'""")
     print('Stopped program')
@@ -134,6 +146,10 @@ def make_polygon(genes, t, delta_t):
 
         genes['note'] = genes['rootnote'] + 12 * ((genes['rootoctave'] - 1) + math.log2(factor) * i)  # + (factor*i))
         genes['radius'] = SCALING_FACTOR * 440 * 10 ** (math.log(2, 10) * (genes['note'] - 69) / 12)
+
+        shape_base_note = genes['note'] if i == 0 else shape_base_note
+        genes['pitch'] = ((genes['note'] - shape_base_note) / 24 * 12) * 2
+
 
         # get the rotation angles
         prev_angle = round((t-delta_t) * (360. / genes['order']) * (genes['bpm'] / 60.), 3)
