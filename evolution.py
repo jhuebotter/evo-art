@@ -5,10 +5,8 @@ import time
 import json
 from presets import *
 
-data_path = 'data/'
-preset_name = 'default'
-preset_path = 'data/presets/' + preset_name
-config_path = preset_path + '/' + 'config.json'
+MASTER_CONFIG_PATH = 'data/master_' # probably just pull this from the main file
+
 
 def evalOneMax(individual):
 
@@ -51,14 +49,10 @@ toolbox.register("select", tools.selNSGA2)
 
 def main():
 
-    # now load in JSON configuration file
-    #with open(data_path + 'test_config.json') as f:
-    #    config = json.load(f)
-    #    print(config['mut_rate'])
+    preset_path = read_preset_path()
+    preset_config = load_config(preset_path)
 
-    config = load_config(config_path)
-
-    time.sleep(config['gen_length'])
+    time.sleep(preset_config['gen_length'])
 
     # Init population
     pop = toolbox.population()
@@ -73,7 +67,7 @@ def main():
     # CXPB  is the probability with which two individuals
     #       are crossed
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0., config['mut_rate']
+    CXPB, MUTPB = 0., preset_config['mut_rate']
 
     # Extracting all the fitnesses of
     fits = [ind.fitness.values[0] for ind in pop]
@@ -83,13 +77,10 @@ def main():
 
     # Begin the evolution
     done = False
-    while not done: #max(fits) < 100 and g < 1000:
+    while not done:
+
         # A new generation
         g = g + 1
-
-        #CXPB = 0.5
-        #if g % 20 == 0:
-        #    CXPB = 0.5
 
         print("-- Generation %i --" % g)
 
@@ -137,9 +128,9 @@ def main():
 
 
         # now load in JSON configuration file
-        with open(data_path + 'presets/default/config.json') as f:
-            config = json.load(f)
-        time.sleep(config['gen_length'])
+        preset_path = read_preset_path()
+        preset_config = load_config(preset_path)
+        time.sleep(preset_config['gen_length'])
 
     return
 
