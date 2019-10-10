@@ -55,6 +55,7 @@ def main():
     preset_path = read_preset_path()
     preset_config = load_config(preset_path)
 
+
     # set csv of currently playing instrument
     playing = preset_path + 'current/playing.csv'
 
