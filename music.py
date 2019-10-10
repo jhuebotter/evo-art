@@ -2,7 +2,6 @@ from psonic import *
 import glob as glob
 import os
 
-
 # instuments
 synths = ['pluck', 'mod_pulse', 'mod_sine', 'piano']
 #rsynths = ['pluck', 'pluck', 'pluck', 'pluck']
@@ -21,23 +20,23 @@ LOW_PERC = [x for x in glob.glob('samples/LOW_PERC/*')]
 
 base_dir = os.getcwd() + '/'
 
-print(base_dir)
-print(LOW_PERC)
-print(HIGH_PERC)
+#print(base_dir)
+#print(LOW_PERC)
+#print(HIGH_PERC)
 
 instruments = [synths, bass, low_percs, high_percs, synths, synths, high_percs, synths, bass, bass]
 
 def get_sample_name(path):
+    
     string = str(path)
     elem = string.split('/')[-1]
     sample_name = elem.replace('.wav', '')
     return sample_name
 
 
-
-
 def setup_listeners2():
-    print("setting up metronome TICK")
+    
+    #print("setting up metronome TICK")
 
     run("""use_debug false
             live_loop :metronome do
@@ -46,7 +45,7 @@ def setup_listeners2():
             end""")
 
     for synth in synths:
-        print("setting up listener for", synth)
+        #print("setting up listener for", synth)
         run(f"""in_thread do
             live_loop :{synth}, sync: :tick do
             n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
@@ -58,8 +57,8 @@ def setup_listeners2():
 
     for bass in BASS:
         sample_name = get_sample_name(bass)
-        print(sample_name)
-        print('Setting up listener for: ', bass)
+        #print(sample_name)
+        #print('Setting up listener for: ', bass)
         run(f"""in_thread do
                     live_loop :{sample_name}, sync: :tick do           
                     a, = sync "/osc/trigger/{sample_name}"
@@ -70,8 +69,8 @@ def setup_listeners2():
 
     for perc in HIGH_PERC:
         sample_name = get_sample_name(perc)
-        print('Setting up listener for: ', perc)
-        print(sample_name)
+        #print('Setting up listener for: ', perc)
+        #print(sample_name)
         run(f"""in_thread do
             live_loop :{sample_name}, sync: :tick do           
             a, m, m_echo = sync "/osc/trigger/{sample_name}"
@@ -86,8 +85,8 @@ def setup_listeners2():
 
     for perc in LOW_PERC:
         sample = get_sample_name(perc)
-        print(sample)
-        print('Setting up listener for: ', sample)
+        #print(sample)
+        #print('Setting up listener for: ', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do              
             a, = sync "/osc/trigger/{sample}"
@@ -100,7 +99,7 @@ def setup_listeners2():
 
 
 def setup_listeners():
-    print("setting up metronome TICK")
+    #print("setting up metronome TICK")
 
     run("""use_debug false
         
@@ -110,7 +109,7 @@ def setup_listeners():
             end""")
 
     for synth in synths:
-        print("setting up listener for", synth)
+        #print("setting up listener for", synth)
         run(f"""in_thread do
             live_loop :{synth}, sync: :tick do
             n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
@@ -121,7 +120,7 @@ def setup_listeners():
             end""")
 
     for sample in low_percs:
-        print('Setting up listener for: ', sample)
+        #print('Setting up listener for: ', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do              
             a, = sync "/osc/trigger/{sample}"
@@ -130,7 +129,7 @@ def setup_listeners():
             end""")
 
     for sample in high_percs:
-        print('Setting up listener for: ', sample)
+        #print('Setting up listener for: ', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do           
             a, m, m_echo = sync "/osc/trigger/{sample}"
@@ -142,7 +141,7 @@ def setup_listeners():
             end
             end""")
     for sample in bass:
-        print('Setting up listener for: ', sample)
+        #print('Setting up listener for: ', sample)
         run(f"""in_thread do
             live_loop :{sample}, sync: :tick do            
             a, = sync "/osc/trigger/{sample}"
@@ -150,7 +149,7 @@ def setup_listeners():
             end
             end""")
     for snare in snares:
-        print('Setting up listener for: ', snare)
+        #print('Setting up listener for: ', snare)
         run(f"""live_loop :{snare}, sync: :tick do          
             a, = sync "/osc/trigger/{snare}"
             sample :{snare}, amp: a        
@@ -162,16 +161,16 @@ def play_synth(genes):
     # Play snyths
 
     if genes['nature'] == 0:
-        print('Bass playing:  ', BASS[genes['instrument']])
+        #print('Bass playing:  ', BASS[genes['instrument']])
         send_message(f"/trigger/{get_sample_name(BASS[genes['instrument']])}", genes['amp'])
     elif genes['nature'] == 1:
-        print('Low Perc: ', LOW_PERC[genes['instrument']])
+        #print('Low Perc: ', LOW_PERC[genes['instrument']])
         send_message(f"/trigger/{get_sample_name(LOW_PERC[genes['instrument']])}", genes['amp'])
     elif genes['nature'] == 2:
-        print(HIGH_PERC[genes['instrument']])
+        #print(HIGH_PERC[genes['instrument']])
         send_message(f"/trigger/{get_sample_name(HIGH_PERC[genes['instrument']])}", genes['amp'], genes['mix_reverb'], genes['mix_echo'])
     elif genes['nature'] >= 3:
-        print('Synth: ', synths[genes['instrument']])
+        #print('Synth: ', synths[genes['instrument']])
         send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['release'],
                      genes['attack'], genes['mix_reverb'], genes['mod_range'])
 

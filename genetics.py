@@ -2,14 +2,9 @@ import random
 import pandas as pd
 import json
 
-data_path = 'data/'
+DATA_PATH = 'data/'
 
-size = [1920, 1080]
-center = [size[0] / 2, size[1] / 2]
 
-#synths = ['blade', 'sine', 'pretty_bell', 'dull_bell', 'dpulse']
-#synths = ['piano', 'mod_synth', 'bass', 'kick']
-#samples = ['elec_soft_kick', 'sn_dub', 'tabla_ke3', 'tabla_na_s', 'elec_wood', 'bass_voxy_hit_c', 'drum_cowbell', 'drum_cymbal_pedal']
 
 # instuments
 synths = ['blade', 'mod_pulse', 'mod_sine', 'pretty_bell']
@@ -22,6 +17,7 @@ bass = ['bass_hard_c', 'bass_hit_c', 'bass_voxy_hit_c', 'mehackit_phone1']
 vox = ['ambi_choir']
 
 instruments = [synths, low_percs, snares, high_percs, synths, synths, high_percs, synths, bass, bass]
+
 
 
 def random_genome():
@@ -56,14 +52,14 @@ def random_genome():
     return genes
 
 
-def make_phenotype(genes):
+def make_phenotype(genes, preset_config={}):
 
-    # creates a semi random genome
+    # mapping function
 
     phenotype = dict(rootnote=int(genes['rootnote'] * 12 + 24),
                  rootoctave=int(genes['rootoctave'] * 3 + 3),
                  order=int(genes['order'] * 9 + 3),
-                 number=int(genes['number'] * 4 + 1),
+                 number=int(genes['number'] * 3 + 2),
                  bpm=int(15*2**int(genes['bpm']*3)),
                  total_offset=(1/8) * int(genes['total_offset'] * 8) * 0.5**int(genes['bpm']*3),
                  initial_offset=(1/8) * int(genes['initial_offset'] * 8) * 0.5**int(genes['bpm']*3),
@@ -115,17 +111,6 @@ def make_genepool(size=3, crispr=[dict()]):
     return df
 
 
-def make_genepool2(size=20):
-
-    genepool = []
-    for i in range(size):
-
-        gen = random_genome()
-        genepool.append(gen)
-
-    return pd.DataFrame(genepool)
-
-
 def load_genepool(filename='genepool.csv'):
 
     # loads a genepool from a given file
@@ -143,24 +128,3 @@ def save_genepool(df, filename='genepool.csv'):
 
     return
 
-
-def set_colors(genes, rgb=[0.8, 0.5, 0.2], random_colors=True):
-
-    # change a genes color values
-
-    if random_colors:
-        genes['red'] = random_color()
-        genes['green'] = random_color()
-        genes['blue'] = random_color()
-    else:
-        genes['red'] = 100 + int(rgb[0] * 155)
-        genes['green'] = 100 + int(rgb[1] * 155)
-        genes['blue'] = 100 + int(rgb[2] * 155)
-    return genes
-
-
-def random_color():
-
-    # get a random color value
-
-    return 100 + int(random.uniform(0, 155))

@@ -7,11 +7,8 @@ import time
 import json
 import glob as glob
 
-MASTER_CONFIG_PATH = 'data/presets/master_config.json' # probably just pull this from the main file
+MASTER_CONFIG_PATH = 'data/presets/master_' # probably just pull this from the main file
 
-preset_name = 'default'
-preset_path = 'data/presets/' + preset_name + '/'
-config_path = preset_path + '/' + 'config.json'
 
 def evalOneMax(individual):
     x = sum(individual)
@@ -44,13 +41,12 @@ toolbox.register("mutate", tools.mutPolynomialBounded, eta=.5, low=0., up=1., in
 toolbox.register("select", tools.selNSGA2)
 
 def main():
+    
+    preset_path = read_preset_path()
+    preset_config = load_config(preset_path)
 
-    # load in JSON configuration file
-    with open(config_path) as f:
-        conf_file = json.load(f)
-        print(conf_file['mut_rate'])
 
-    time.sleep(conf_file['gen_length'])
+    time.sleep(preset_config['gen_length'])
 
     # Initializing the populations
     pop_paths = []
@@ -66,7 +62,7 @@ def main():
 
     pops = [toolbox.population(pop_path) for pop_path in pop_paths]
 
-    CXPB, MUTPB = 0., conf_file['mut_rate'] # crossover mutation is currently not implemented
+    CXPB, MUTPB = 0., preset_config['mut_rate'] # crossover mutation is currently not implemented
     g = 0 # generation counter
 
     for pop in pops:

@@ -8,7 +8,7 @@ from psonic import *
 import json
 
 # Set the height and width of the screen
-size = [1400, 700]
+size = [1080, 1080]
 center = [size[0] / 2, size[1] / 2]
 pos_line = [[center[0], 0], center]
 

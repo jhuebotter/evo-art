@@ -34,7 +34,7 @@ if __name__ == '__main__':
     config_thread.start()
 
     while geo_thread.is_alive() and config_thread.is_alive() and evo_thread.is_alive():
-       time.sleep(1)
+        time.sleep(1)
 
     geo_thread.terminate()
     evo_thread.terminate()
