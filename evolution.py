@@ -137,7 +137,7 @@ def main():
 
 
         # now load in JSON configuration file
-        with open(data_path + 'test_config.json') as f:
+        with open(data_path + 'presets/default/config.json') as f:
             config = json.load(f)
         time.sleep(config['gen_length'])
 

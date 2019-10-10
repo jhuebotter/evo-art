@@ -40,7 +40,7 @@ def setup_listeners2():
     print("setting up metronome TICK")
 
     run("""use_debug false
-            live_loop :metronome do
+        live_loop :metronome do
                 cue :tick
                 sleep 0.0625
             end""")
@@ -63,7 +63,7 @@ def setup_listeners2():
         run(f"""in_thread do
                     live_loop :{sample_name}, sync: :tick do           
                     a, = sync "/osc/trigger/{sample_name}"
-                    sample '{base_dir}{bass}', amp: a, , pre_amp: 0.6
+                    sample '{base_dir}{bass}', amp: a, pre_amp: 0.6
                     end
                     end""")
 
