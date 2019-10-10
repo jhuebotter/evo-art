@@ -19,7 +19,7 @@ def create_folder(directory):
         if not os.path.exists(directory):
             os.makedirs(directory)
     except OSError:
-        print ('Error: Creating directory. ' + directory)
+        print('Error creating directory: ' + directory)
 
 
 def create_preset(preset_name, config_path=DEFAULT_CONFIG_DIR_PATH):
@@ -41,7 +41,6 @@ def load_config(config_path=MASTER_CONFIG_PATH):   # loads .json config file for
 def save_config(path, config):
     
     with open(path + 'config.json', 'w') as fp:
-        print(config)
         json.dump(config, fp)
 
 

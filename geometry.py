@@ -77,7 +77,9 @@ def main():
         try:
             df = pd.read_csv('genepool.csv', index_col=0)
         except:
-            print('error loading genepool')
+            #print('error loading genepool')
+            pass
+
         genepool = df.to_dict(orient='records')
 
         # All drawing code happens after the for loop and but

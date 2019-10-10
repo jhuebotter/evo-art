@@ -22,6 +22,8 @@ def run_config(sin):
 
 
 if __name__ == '__main__':
+    
+    print("Welcome to the Evo Art geometric music project.")
 
     sin = sys.stdin.fileno()
 
