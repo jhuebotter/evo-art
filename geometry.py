@@ -35,6 +35,7 @@ screen = pygame.display.set_mode(size)
 def main():
 
     print("Starting geometry main function.")
+    time.sleep(1)
     clock = pygame.time.Clock()
 
     # ---  Here we init the genes -------------------- #
@@ -56,7 +57,7 @@ def main():
     preset_config = load_config(preset_path)
 
     # set csv of currently playing instrument
-    playing = preset_path + 'current/playing.csv'
+    playing = preset_path + 'current/playing.txt'
 
     #setup_listeners2(df, df['instrument'].values)
     setup_listeners2()
@@ -67,11 +68,12 @@ def main():
 
     # Loop until the user clicks the close button.
     done = False
+    i = 0
     while not done:
 
         # This limits the while loop to a max of 10 times per second.
         # Leave this out and we will use all CPU we can.
-        #clock.tick(FPS)
+        clock.tick(FPS)
 
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start
@@ -80,17 +82,30 @@ def main():
         delta_t = t0 - t_minus1
         #print(delta_t)
 
-        for event in pygame.event.get():  # User did something
-            if event.type == pygame.QUIT:  # If user clicked close
-                done = True  # Flag that we are done so we exit this loop
+        if i % FPS == 0:
 
-        try:
-            df = pd.read_csv(playing, index_col=0)
-        except:
-            print('error loading genepool')
-            pass
+            print(i)
 
-        genepool = df.to_dict(orient='records')
+            # make sure we have our config files
+            preset_path = read_preset_path()
+            preset_config = load_config(preset_path)
+
+            # set csv of currently playing instrument
+            playing = preset_path + 'current/playing.csv'
+
+            for event in pygame.event.get():  # User did something
+                if event.type == pygame.QUIT:  # If user clicked close
+                    done = True  # Flag that we are done so we exit this loop
+
+            try:
+                df = load_genepool(playing)
+            except:
+                print('error loading genepool')
+                pass
+
+            phenotypes = df.to_dict(orient='records')
+
+        i += 1
 
         # All drawing code happens after the for loop and but
         # inside the main while done==False loop.
@@ -99,8 +114,8 @@ def main():
         pygame.draw.polygon(screen, WHITE, pos_line, 1)
 
         # This is where the magic happens
-        for genes in genepool:
-            phenotype = make_phenotype(genes)
+        for phenotype in phenotypes:
+            #phenotype = make_phenotype(genes)
             make_polygon(phenotype, t0, delta_t)
 
         # This MUST happen after all the other drawing commands.

@@ -62,4 +62,4 @@ def create_initial_genes(preset_path, config, nature):
 # these lines could also be in the main file
 master_config = load_config(MASTER_CONFIG_PATH)
 current_config_path = master_config['preset_path']
-create_preset('default3') # test line
+#create_preset('default3') # test line
