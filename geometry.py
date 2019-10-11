@@ -74,6 +74,8 @@ def main():
         # Leave this out and we will use all CPU we can.
         clock.tick(FPS)
 
+
+
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start
         now = time.time()
