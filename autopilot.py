@@ -17,7 +17,7 @@ def select_genes():
     current_genes = pd.DataFrame()
 
 
-    rand_index = random.randint(0, preset_config['size'])
+    rand_index = random.randint(0, preset_config['size'] - 1)
 
     for i in glob.glob(f'{preset_path}initial/*'):
         data = load_genepool(i)#pd.read_csv(i, index_cols=0)

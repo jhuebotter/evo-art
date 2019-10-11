@@ -72,7 +72,7 @@ def main():
 
         # This limits the while loop to a max of 10 times per second.
         # Leave this out and we will use all CPU we can.
-        #clock.tick(FPS)
+        clock.tick(FPS)
 
         # Time each iteration to know how far to move the geometry
         t_minus1 = now - start
