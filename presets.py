@@ -1,4 +1,5 @@
 from genetics import *
+from autopilot import *
 import json
 import os
 
@@ -19,7 +20,7 @@ def create_folder(directory):
         if not os.path.exists(directory):
             os.makedirs(directory)
     except OSError:
-        print ('Error: Creating directory. ' + directory)
+        print('Error creating directory: ' + directory)
 
 
 def create_preset(preset_name, config_path=DEFAULT_CONFIG_DIR_PATH):
@@ -41,7 +42,6 @@ def load_config(config_path=MASTER_CONFIG_PATH):   # loads .json config file for
 def save_config(path, config):
     
     with open(path + 'config.json', 'w') as fp:
-        print(config)
         json.dump(config, fp)
 
 
@@ -60,7 +60,30 @@ def create_initial_genes(preset_path, config, nature):
     df.to_csv(preset_path + nature + '.csv')
 
 
+def create_preset_from_config_file(config, name):
+
+    preset_path = f'{PRESETS_DIR_PATH}{name}/'
+
+    create_folder(preset_path)
+    create_folder(f'{preset_path}initial')
+
+    for nature in config['natures']:
+        create_initial_genes(preset_path + 'initial/', config, nature)
+
+    initialize_current(preset_path)
+
+
+
+conf = {"mut_rate": 1, "gen_length": 8, "bpm_base": 10, "genre": "test", "natures": ["synths", "synths", "synths", "synths"], "size": 20, "refresh_rate": 1}
+
+
+
+create_preset_from_config_file(conf, 'all_synths')
+
+
+
+
 # these lines could also be in the main file
 master_config = load_config(MASTER_CONFIG_PATH)
 current_config_path = master_config['preset_path']
-create_preset('default3') # test line
+#create_preset('default3') # test line
