@@ -3,8 +3,8 @@ import glob as glob
 import os
 
 # instuments
-#synths = ['mod_beep', 'mod_pulse', 'mod_sine', 'growl']
-synths = ['hollow', 'dark_ambience', 'dull_bell', 'sine']
+synths = ['mod_beep', 'mod_pulse', 'mod_sine', 'growl']
+#synths = ['hollow', 'dark_ambience', 'dull_bell', 'sine']
 #synths = ['piano', 'piano', 'piano', 'piano']
 #synths = ['tech_saws', 'tech_saws', 'tech_saws', 'tech_saws']
 
