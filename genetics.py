@@ -62,14 +62,14 @@ def make_phenotype(genes, preset_config={}):
                  number=int(genes['number'] * 3 + 1),
                  bpm=int(15*2**int(genes['bpm']*3)),
                  total_offset=(1/8) * int(genes['total_offset'] * 8) * 0.5**int(genes['bpm']*3),
-                 initial_offset=(1/8) * int(genes['initial_offset'] * 8) * 0.5**int(genes['bpm']*3),
+                 initial_offset=(1/8) * int(genes['initial_offset'] * 8) * 1**int(genes['bpm']*3),
                  red=int(genes['red'] * 155 + 100), green=int(genes['green'] * 155 + 100),
                  blue=int(genes['blue'] * 155 + 100),
                  nature=genes['nature'],#nature=int(genes['nature']*4),
                  instrument=int(genes['instrument']*4),
                  # this is all relevant for a synth
-                 amp=round(genes['amp'] / 3 + 0.5, 2),
-                 cutoff=int(genes['cutoff'] * 70 + 30 ),
+                 amp=round(genes['amp'] * 0.5 + 0.5, 2),
+                 cutoff=int(genes['cutoff'] * 30 + 70),
                  pan=round(genes['pan'] - 0.5, 2),
                  attack=round(genes['attack'] / 2, 2),
                  release=round(genes['release'], 2),
@@ -77,7 +77,7 @@ def make_phenotype(genes, preset_config={}):
                  mod_phase=round(genes['mod_phase'] * .7 + .1, 2),
                  #effect stuff
                  mix_reverb=round(genes['mix_reverb'] * .7 + .3, 2),
-                 mix_echo=round(genes['mix_echo'] * .8, 2)
+                 mix_echo=round(genes['mix_echo'] * .6, 2)
                  # Now the sample related stuff
                  #pitch_change=int(genes['pitch'] * 24 - 12)
                  #pitch=int(genes['note'])

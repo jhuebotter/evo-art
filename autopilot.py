@@ -5,15 +5,6 @@ from genetics import *
 import glob
 
 
-def initialize_current(preset_path):
-
-    create_folder(f'{preset_path}current')
-
-    for file in glob.glob(f'{preset_path}initial/*'):
-        data = load_genepool(file)
-        name = file.split('/')[-1]
-        save_genepool(data, f'{preset_path}current/{name}')
-
 
 def select_genes(index, preset_path):
 

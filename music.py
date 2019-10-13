@@ -3,8 +3,11 @@ import glob as glob
 import os
 
 # instuments
-synths = ['pluck', 'mod_pulse', 'mod_sine', 'piano']
-#rsynths = ['pluck', 'pluck', 'pluck', 'pluck']
+#synths = ['mod_beep', 'mod_pulse', 'mod_sine', 'growl']
+synths = ['hollow', 'dark_ambience', 'dull_bell', 'sine']
+#synths = ['piano', 'piano', 'piano', 'piano']
+#synths = ['tech_saws', 'tech_saws', 'tech_saws', 'tech_saws']
+
 #high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'tabla_tun1']
 #low_percs = ['elec_soft_kick', 'tabla_ke2', 'drum_bass_soft', 'drum_tom_mid_soft', 'tabla_re']
@@ -48,9 +51,9 @@ end""")
         #print("setting up listener for", synth)
         run(f"""in_thread do
   live_loop :{synth}, sync: :tick do
-    n, c, r, a, p, m, m2 = sync "/osc/trigger/{synth}"
+    n, c, a, r, p, m = sync "/osc/trigger/{synth}"
     with_fx :reverb, mix: m, room: 0.5, pre_amp: 0.1 do
-      synth :{synth}, note: n, cutoff: c, attack: a, release: r, pan: p, mod_range: m2
+      synth :{synth}, note: n, cutoff: c, attack: a, release: r, pan: p
     end
   end
 end""")
@@ -74,9 +77,9 @@ end""")
         run(f"""in_thread do
   live_loop :{sample_name}, sync: :tick do
     a, m, m_echo, p = sync "/osc/trigger/{sample_name}"
-    with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 0.5 do
+    with_fx :echo, mix: m_echo, pre_mix: 0.2, phase: 1 do
       with_fx :reverb, mix: m, pre_amp: 0.3, room: 0.2 do
-        sample '{base_dir}{perc}', amp: a, pitch: p
+        sample '{base_dir}{perc}', amp: a, pitch: p, pre_amp: 0.7
       end
     end
   end
@@ -90,7 +93,7 @@ end""")
         run(f"""in_thread do
   live_loop :{sample}, sync: :tick do
     a, p = sync "/osc/trigger/{sample}"
-    sample '{base_dir}{perc}', amp: a, pre_amp: 0.5, pitch: p
+    sample '{base_dir}{perc}', amp: a, pre_amp: 0.3, pitch: p
   end
 end""")
 
@@ -161,18 +164,18 @@ def play_synth(genes):
 
     # Play snyths
 
-    if genes['nature'] == 'bass':
+    if 'bass' in genes['nature']:
         #print('Bass playing:  ', BASS[genes['instrument']])
         send_message(f"/trigger/{get_sample_name(BASS[genes['instrument']])}", genes['amp'], genes['pitch'])
-    elif genes['nature'] == 'low_perc':
+    elif 'low_perc' in genes['nature']:
         #print('Low Perc: ', LOW_PERC[genes['instrument']])
         send_message(f"/trigger/{get_sample_name(LOW_PERC[genes['instrument']])}", genes['amp'], genes['pitch'])
-    elif genes['nature'] == 'high_perc':
+    elif 'high_perc' in genes['nature']:
         #print(HIGH_PERC[genes['instrument']])
         send_message(f"/trigger/{get_sample_name(HIGH_PERC[genes['instrument']])}", genes['amp'], genes['mix_reverb'], genes['mix_echo'], genes['pitch'])
-    elif genes['nature'] == 'synths':
+    elif 'synths' in genes['nature']:
         #print('Synth: ', synths[genes['instrument']])
-        send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['release'], genes['attack'], genes['mix_reverb'], genes['mod_range'])
+        send_message(f"/trigger/{synths[genes['instrument']]}", genes['note'], genes['cutoff'], genes['attack'], genes['release'], genes['mix_reverb'])
 
     return
 

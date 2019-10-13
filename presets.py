@@ -2,6 +2,7 @@ from genetics import *
 from autopilot import *
 import json
 import os
+import glob
 
 PRESETS_DIR_PATH = 'data/presets/'
 MASTER_CONFIG_PATH = 'data/master_'
@@ -54,31 +55,45 @@ def create_data_structure(preset_path, config):
     create_folder(preset_path + 'current')
 
 
-def create_initial_genes(preset_path, config, nature):
+def create_initial_genes(preset_path, config, name):
     
     df = make_genepool(config['size'])   # pull size from config here if needed
-    df.to_csv(preset_path + nature + '.csv')
+    df.to_csv(preset_path + name + '.csv')
 
+def initialize_current(preset_path):
+
+    create_folder(f'{preset_path}current')
+
+    for file in glob.glob(f'{preset_path}initial/*'):
+        data = load_genepool(file)
+        name = file.split('/')[-1]
+        save_genepool(data, f'{preset_path}current/{name}')
 
 def create_preset_from_config_file(config, name):
+    '''
+    Create complete preset folder from config dict object
+
+    :param config: dictionary containing all config keys and values
+    :param name: name for the preset
+    :return: preset folder with /initial, initialized /current and config.json
+    '''
 
     preset_path = f'{PRESETS_DIR_PATH}{name}/'
-
     create_folder(preset_path)
+    # place conifg.json in folder
+    save_config(preset_path, config)
+
+    # now create initial folder
     create_folder(f'{preset_path}initial')
 
+    suffix = 1 # suffix for multiple pools of same instrument category
+
     for nature in config['natures']:
-        create_initial_genes(preset_path + 'initial/', config, nature)
+        # create initial gene pools
+        create_initial_genes(f'{preset_path}initial/', config, f'{nature}_{suffix}')
+        suffix += 1
 
     initialize_current(preset_path)
-
-
-
-conf = {"mut_rate": 1, "gen_length": 8, "bpm_base": 10, "genre": "test", "natures": ["synths", "synths", "synths", "synths"], "size": 20, "refresh_rate": 1}
-
-
-
-create_preset_from_config_file(conf, 'all_synths')
 
 
 
