@@ -3,14 +3,17 @@ New version of evolution.py, which now evolves separate populations rather than 
 
 Still to be implemented:
 - which genes should be mutated, which shouldn't? (instrument pool, for example, shouldn't be mutated?)
-- thorough testing on mutation. Why do some genes not mutate?
+- thorough testing on mutation. Why do some genes not mutate? (working as intended?)
 - integration with the updated rest of the code
 - Making an up-to-date merge and push this to 'tommy' branch (or master)
 - This merge COULD already include updated geometry.py (and whatever else needs to be updated) that can use these genes
+- some brainstorming is necessary on how to best use the new population structure, and how (if necessary) to make the
+  code iterable for any amount of natures.
 
 Notes:
 - I fixed the generation length by moving time.sleep(conf_file['gen_length'] into the loop. Does this still work with
   the 'main file' implementation?
+- Mutation rates are now encoded as a list of 4 floats, representing the mutation rate for each
 '''
 
 
