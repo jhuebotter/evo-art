@@ -104,12 +104,6 @@ def make_genepool(size=3, crispr=[dict()]):
     df = pd.DataFrame(genepool)
     return df
 
-def make_genepool2(size=20):
-    genepool = []
-    for i in range(size):
-        gen = random_genome()
-        genepool.append(gen)
-    return pd.DataFrame(genepool)
 
 def load_genepool(filename='genepool.csv'):
     # loads a genepool from a given file

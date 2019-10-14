@@ -22,7 +22,7 @@ def initPopulation(pcls, ind_init, filename):
         contents.append(list(genom))
     return pcls(ind_init(c) for c in contents)
 
-creator.create("FitnessMax", base.Fitness, weights=(-1.00,))
+creator.create("FitnessMax", base.Fitness, weights=(0.00,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
@@ -40,7 +40,7 @@ toolbox.register("select", tools.selNSGA2)
 def main():
 
     # now load in JSON configuration file
-    with open(data_path + 'presets/default/config.json') as f:
+    with open(data_path + 'test_config.json') as f: # plug in preset config here
         conf_file = json.load(f)
         print(conf_file['mut_rate'])
 
@@ -122,9 +122,9 @@ def main():
 
 
         # now load in JSON configuration file
-        with open(data_path + 'presets/default/config.json') as f:
+        with open(data_path + 'test_config.json') as f: # plug in preset config here
             conf_file = json.load(f)
-            # print(conf_file['mut_rate'])
+            time.sleep(conf_file['gen_length'])
 
     return
 
