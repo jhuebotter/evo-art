@@ -22,7 +22,7 @@ def initPopulation(pcls, ind_init, filename):
         contents.append(list(genom))
     return pcls(ind_init(c) for c in contents)
 
-creator.create("FitnessMax", base.Fitness, weights=(0.00,))
+creator.create("FitnessMax", base.Fitness, weights=(-1.00,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
@@ -40,16 +40,13 @@ toolbox.register("select", tools.selNSGA2)
 def main():
 
     # now load in JSON configuration file
-    with open(data_path + 'master_config.json') as f:
+    with open(data_path + 'presets/default/config.json') as f:
         conf_file = json.load(f)
         print(conf_file['mut_rate'])
 
     time.sleep(conf_file['gen_length'])
 
     # Init population
-    pops = []
-    for nature in natures:
-
     pop = toolbox.population()
 
     # Evaluate the entire population
@@ -106,6 +103,8 @@ def main():
 
         pop[:] = offspring
 
+        print(pop)
+
         pop_genes = pd.DataFrame(pop, columns=load_genepool().columns)
         pop_genes.to_csv('genepool.csv')
         # Gather all the fitnesses in one list and print the stats
@@ -123,9 +122,9 @@ def main():
 
 
         # now load in JSON configuration file
-        with open(data_path + 'master_config.json') as f:
+        with open(data_path + 'presets/default/config.json') as f:
             conf_file = json.load(f)
-            time.sleep(conf_file['gen_length'])
+            # print(conf_file['mut_rate'])
 
     return
 

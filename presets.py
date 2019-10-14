@@ -47,15 +47,16 @@ def create_data_structure(preset_path, config):
     create_folder(preset_path)
     create_folder(preset_path + 'initial')
     for nature in config['natures']:
-        create_initial_genes(preset_path + 'initial/', config, nature)
+        create_initial_genes(preset_path, config, nature)
     create_folder(preset_path + 'current')
 
 def create_initial_genes(preset_path, config, nature):
     df = make_genepool2(config['size'])   # pull size from config here if needed
-    df.to_csv(preset_path + nature + '.csv')
+    df.to_csv(preset_path + 'initial/' + nature + '.csv') # save the initial preset in a 'safe' folder
+    df.to_csv(preset_path + 'current/' + nature + '.csv') # also save them to current for evolution
 
 
 # these lines could also be in the main file
 master_config = load_config(MASTER_CONFIG_PATH)
 current_config_path = master_config['preset_path']
-create_preset('default3') # test line
+create_preset('default') # test line for creating a blank (default) preset
