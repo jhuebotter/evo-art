@@ -49,12 +49,13 @@ toolbox.register("select", tools.selNSGA2)
 
 def main():
 
+    # load configs and wait a generation
     preset_path = read_preset_path()
     preset_config = load_config(preset_path)
 
     time.sleep(preset_config['gen_length'])
 
-    # Init population
+    # Initialize population
     pop = toolbox.population()
 
 
@@ -105,8 +106,10 @@ def main():
         # Evaluate the individuals with an invalid fitness
         #invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         fitnesses = map(toolbox.evaluate, offspring)
+
         for ind, fit in zip(offspring, fitnesses):
             ind.fitness.values = fit
+            print(fit)
 
         pop[:] = offspring
 
@@ -120,11 +123,6 @@ def main():
         mean = sum(fits) / length
         sum2 = sum(x * x for x in fits)
         std = abs(sum2 / length - mean * 2) * 0.5
-
-        #print("  Min %s" % min(fits))
-        #print("  Max %s" % max(fits))
-        #print("  Avg %s" % mean)
-        #print("  Std %s" % std)
 
 
         # now load in JSON configuration file

@@ -52,7 +52,8 @@ def main():
     #df = pd.read_csv('genepool.csv', index_col=0)
     #genepool = df.to_dict(orient='records')  # [genes1]
     '''
-    # make sure we have our config files
+
+    # retrieve config files
     preset_path = read_preset_path()
     preset_config = load_config(preset_path)
 

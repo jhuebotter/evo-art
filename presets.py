@@ -57,7 +57,7 @@ def create_data_structure(preset_path, config):
 
 def create_initial_genes(preset_path, config, name):
     
-    df = make_genepool(config['size'])   # pull size from config here if needed
+    df = make_genepool(config['pop_size'])   # pull size from config here if needed
     df.to_csv(preset_path + name + '.csv')
 
 def initialize_current(preset_path):
@@ -80,13 +80,13 @@ def create_preset_from_config_file(config, name):
 
     preset_path = f'{PRESETS_DIR_PATH}{name}/'
     create_folder(preset_path)
-    # place conifg.json in folder
+    # place config.json in folder
     save_config(preset_path, config)
 
     # now create initial folder
     create_folder(f'{preset_path}initial')
 
-    suffix = 1 # suffix for multiple pools of same instrument category
+    suffix = 1  # suffix for multiple pools of same instrument category
 
     for nature in config['natures']:
         # create initial gene pools
@@ -102,3 +102,8 @@ def create_preset_from_config_file(config, name):
 master_config = load_config(MASTER_CONFIG_PATH)
 current_config_path = master_config['preset_path']
 #create_preset('default3') # test line
+
+
+#conf = {"mut_rate": [0,0.2,1,1], "gen_length": 8, "bpm_base": 10, "genre": "test", "natures": ["low_perc", "bass", "synths", "synths"], "size": 20, "refresh_rate": 8}
+
+#create_preset_from_config_file(conf, 'l-b-s-s')

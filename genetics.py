@@ -5,8 +5,7 @@ import json
 DATA_PATH = 'data/'
 
 
-
-# instuments
+# instruments
 synths = ['blade', 'mod_pulse', 'mod_sine', 'pretty_bell']
 #synths = ['saw', 'sine', 'pluck']
 high_percs = ['drum_cymbal_pedal', 'drum_cymbal_closed', 'drum_tom_hi_soft', 'perc_bell', 'ambi_choir', 'tabla_tun1', 'tabla_tun3', 'tabla_tas3']
@@ -19,10 +18,8 @@ vox = ['ambi_choir']
 instruments = [synths, low_percs, snares, high_percs, synths, synths, high_percs, synths, bass, bass]
 
 
-
 def random_genome():
-
-    # creates a semi random genome
+    """creates a pseudo-random genome"""
 
     genes = dict(rootnote=random.random(),
                  rootoctave=random.random(),
@@ -34,7 +31,6 @@ def random_genome():
                  red=random.random(), green=random.random(), blue=random.random(),
                  nature=random.random(),
                  instrument=random.random(),
-                 # this is all relevant for a synth
                  amp=random.random(),
                  cutoff=random.random(),
                  pan=random.random(),
@@ -42,10 +38,8 @@ def random_genome():
                  release=random.random(),
                  mod_range=random.random(),
                  mod_phase=random.random(),
-                 #effect stuff
                  mix_reverb=random.random(),
                  mix_echo=random.random(),
-                 # Now the sample related stuff
                  pitch=random.random()
                  )
 
@@ -53,8 +47,11 @@ def random_genome():
 
 
 def make_phenotype(genes, preset_config={}):
-
-    # mapping function
+    """
+    Function that maps a genepool to a pool of phenotypes.
+    Input: indexed pandas table of genes
+    Output: indexed pandas table of phenes
+    """
 
     phenotype = dict(rootnote=int(genes['rootnote'] * 12 + 24),
                  rootoctave=int(genes['rootoctave'] * 3 + 3),
@@ -87,8 +84,7 @@ def make_phenotype(genes, preset_config={}):
 
 
 def add_genes(df, genes):
-
-    # adds any genes to a geneome
+    """add genes to genome"""
 
     df.append(genes, ignore_index=True)
 
@@ -96,15 +92,12 @@ def add_genes(df, genes):
 
 
 def make_genepool(size=3, crispr=[dict()]):
-
-    # create a genepool consisting of a number of random genomes
+    """Create a pool of random genomes"""
 
     genepool = []
 
     for i in range(size):
         gen = random_genome()
-        #for k, v in crispr[i].items():
-        #    gen[k] = v
         genepool.append(gen)
 
     df = pd.DataFrame(genepool)
@@ -113,8 +106,7 @@ def make_genepool(size=3, crispr=[dict()]):
 
 
 def load_genepool(filename='genepool.csv'):
-
-    # loads a genepool from a given file
+    """Load a genepool from a given file"""
 
     df = pd.read_csv(filename, index_col=0)
 
@@ -122,8 +114,7 @@ def load_genepool(filename='genepool.csv'):
 
 
 def save_genepool(df, filename='genepool.csv'):
-
-    # saves a genepool to a given file
+    """save a genepool to a given csv file"""
 
     df.to_csv(filename)
 

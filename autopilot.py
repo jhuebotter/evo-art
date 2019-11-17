@@ -5,7 +5,6 @@ from genetics import *
 import glob
 
 
-
 def select_genes(index, preset_path):
 
     phenotypes = []
@@ -47,7 +46,9 @@ def main():
 
         if i % 10 == 0:
             index = random.randint(0, preset_config['size']-1)
+            # print(index)
             print("changing index")
+
         select_genes(index, preset_path)
         i += 1
         time.sleep(preset_config['refresh_rate'])

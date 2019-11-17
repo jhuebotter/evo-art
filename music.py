@@ -2,9 +2,9 @@ from psonic import *
 import glob as glob
 import os
 
-# instuments
-synths = ['mod_beep', 'mod_pulse', 'mod_sine', 'growl']
-#synths = ['hollow', 'dark_ambience', 'dull_bell', 'sine']
+# instruments
+#synths = ['mod_beep', 'mod_pulse', 'mod_sine', 'growl']
+synths = ['hollow', 'dark_ambience', 'dull_bell', 'sine']
 #synths = ['piano', 'piano', 'piano', 'piano']
 #synths = ['tech_saws', 'tech_saws', 'tech_saws', 'tech_saws']
 
@@ -102,7 +102,7 @@ end""")
 
 
 def setup_listeners():
-    #print("setting up metronome TICK")
+    """set up Sonic Pi listeners"""
 
     run("""use_debug false
         
@@ -161,8 +161,7 @@ def setup_listeners():
 
 
 def play_synth(genes):
-
-    # Play snyths
+    """Play synths"""
 
     if 'bass' in genes['nature']:
         #print('Bass playing:  ', BASS[genes['instrument']])
